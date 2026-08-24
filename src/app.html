@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+    <script type="text/javascript">
+      window.voiceflowReady = new Promise((resolve) => {
+        const widget = document.createElement('script');
+        const firstScript = document.getElementsByTagName('script')[0];
+        widget.onload = async () => {
+          await window.voiceflow.chat.load({
+            verify: { projectID: '6a8cb4a2c1321a9c5d47b59c' },
+            url: 'https://general-runtime.voiceflow.com',
+            voice: { url: 'https://runtime-api.voiceflow.com' },
+            assistant: {
+              header: { hideImage: true, title: 'Tranquility Concierge' },
+              banner: {
+                title: 'Tranquility Concierge',
+                description: 'Tell me what you need today.'
+              },
+              avatar: { hide: true },
+              color: '#4a2949',
+              fontFamily: 'inherit',
+              inputPlaceholder: 'Tell me what you need…',
+              stylesheet:
+                'data:text/css;base64,LnZmcmMtbGF1bmNoZXIgeyBkaXNwbGF5OiBub25lICFpbXBvcnRhbnQ7IH0='
+            }
+          });
+          resolve();
+        };
+        widget.src = 'https://cdn.voiceflow.com/widget-next/bundle.mjs';
+        widget.type = 'text/javascript';
+        firstScript.parentNode.insertBefore(widget, firstScript);
+      });
+    </script>
+  </body>
+</html>
