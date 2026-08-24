@@ -2,6 +2,10 @@
 
 A fictional public portfolio prototype for a spa service concierge. It presents a polished, editorial interface for a no-code customer journey; it is not a client site or a claim of a real engagement.
 
+[View the live prototype](https://spa-concierge-prototype.pages.dev/)
+
+![Tranquility Spa Concierge desktop preview](design/rendered-desktop.png)
+
 ## The problem
 
 A spa menu can leave people choosing by title instead of by what they actually need. Tranquility makes the first decision simpler: describe how you want to feel, receive one considered recommendation, then book or continue the conversation.

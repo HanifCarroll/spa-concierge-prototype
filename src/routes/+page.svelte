@@ -53,7 +53,7 @@
     content="Find the treatment your body is asking for with Tranquility's considered spa concierge."
   />
   <meta name="robots" content="index, follow" />
-  <link rel="canonical" href="/" />
+  <link rel="canonical" href="https://spa-concierge-prototype.pages.dev/" />
   <link rel="icon" href="/favicon.svg" />
   <meta
     property="og:title"
@@ -63,7 +63,10 @@
     property="og:description"
     content="Tell us what you need today. Our concierge will guide you to one considered recommendation."
   />
-  <meta property="og:image" content="/images/treatment-room.png" />
+  <meta
+    property="og:image"
+    content="https://spa-concierge-prototype.pages.dev/images/treatment-room.png"
+  />
   <meta property="og:type" content="website" />
 </svelte:head>
 
