@@ -54,6 +54,8 @@ npm run build   # static production build
 npm run lint    # Prettier formatting check
 ```
 
+The consent, safety, timing, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md).
+
 The Voiceflow project ID is public widget configuration, not a secret. No API keys or credentials belong in this repository. Cal.com URLs are public booking destinations.
 
 ## Cloudflare Pages
