@@ -23,15 +23,15 @@ This site is only the presentation layer. Live operations remain Voiceflow, Make
 
 - SvelteKit 5 with TypeScript and Svelte runes.
 - `@sveltejs/adapter-static` with an `index.html` fallback for Cloudflare Pages.
-- One page with semantic sections, local photography, direct Cal.com booking links, and the official Voiceflow web-chat loader.
+- One page with semantic sections, local photography, Cal.com booking fallbacks, and the official Voiceflow web-chat loader.
 - No UI framework or component library.
 
 ## Guardrails
 
 - The site does not diagnose, triage medical conditions, or make health claims.
-- The concierge recommends from the fictional treatment menu; it should not invent services or booking availability.
+- The concierge recommends from the fictional treatment menu. Its advanced path requests live Cal.com availability through Make before offering a time; it should never invent a slot.
 - Personal preferences should only be collected by the connected operational tools and handled according to their policies.
-- Booking links are explicit external links and open in a new tab.
+- Direct booking links remain explicit external fallbacks and open in a new tab.
 
 ## Design references
 
