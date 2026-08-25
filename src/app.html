@@ -11,13 +11,20 @@
       import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js';
 
       window.Typebot = Typebot;
+      const previewDismissed =
+        localStorage.getItem('typebotPreviewDismissed') === 'true';
       window.typebotReady = Promise.resolve(
         Typebot.initBubble({
           typebot: 'tranquility-concierge-guukh4x',
-          previewMessage: {
-            message: 'Not sure what to choose?',
-            autoShowDelay: 4000
-          },
+          previewMessage: previewDismissed
+            ? undefined
+            : {
+                message: 'Not sure what to choose?',
+                autoShowDelay: 4000
+              },
+          onOpen: () => localStorage.setItem('typebotPreviewDismissed', 'true'),
+          onPreviewMessageDismissed: () =>
+            localStorage.setItem('typebotPreviewDismissed', 'true'),
           theme: {
             button: { backgroundColor: '#29172b', iconColor: '#f4f0eb' },
             previewMessage: {

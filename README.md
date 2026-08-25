@@ -1,6 +1,6 @@
 # Tranquility Spa Concierge
 
-A working prototype showing how spas can turn service confusion into confident bookings and coordinate intake, aftercare, and feedback. It is a fictional portfolio project, not a client site or a claim of a real engagement.
+A working prototype showing how spas can turn service confusion into a concise recommendation, confident booking, and a useful operator summary. It is a fictional portfolio project, not a client site or a claim of a real engagement.
 
 [View the live prototype](https://spa-concierge-prototype.pages.dev/)
 
@@ -12,10 +12,12 @@ A spa menu can leave people choosing by title instead of by what they actually n
 
 ## Product journey
 
-1. **Choose with confidence** — the Typebot concierge guides an uncertain visitor.
-2. **Prepare with intention** — the operational journey can collect preferences through Tally and Make.
-3. **Arrive already known** — Airtable and Gmail can carry a concise summary into the appointment.
-4. **Continue the care** — follow-up and aftercare remain part of the operational workflow.
+1. **Start in free text** — the visitor shares a goal and preferred duration.
+2. **Receive one concise recommendation** — Typebot keeps the decision focused.
+3. **Book in Cal.com** — Cal.com is the booking authority and collects booking contact details.
+4. **Support the visit** — Tally handles post-booking intake and feedback, while the operator receives a useful summary.
+
+Typebot is only for the deterministic recommendation flow and staff-help requests. When a visitor chooses **Ask the spa**, it collects their name and email so staff can follow up; it does not capture contact for booking. DeepSeek turns the visitor's supplied answers into a concise staff summary only after that choice—it does not select the treatment.
 
 This site is only the presentation layer. Live operations remain Typebot, Make, Airtable, Tally, Cal.com, and Gmail.
 
@@ -23,14 +25,13 @@ This site is only the presentation layer. Live operations remain Typebot, Make, 
 
 - SvelteKit 5 with TypeScript and Svelte runes.
 - `@sveltejs/adapter-static` with an `index.html` fallback for Cloudflare Pages.
-- One page with semantic sections, local photography, Cal.com booking fallbacks, and Typebot's official bubble embed.
+- One page with semantic sections, local photography, direct Cal.com booking links, and Typebot's official bubble embed.
 - No UI framework or component library.
 
 ## Guardrails
 
-- The site does not diagnose, triage medical conditions, or make health claims.
-- The concierge recommends from the fictional treatment menu. Its advanced path requests live Cal.com availability through Make before offering a time; it should never invent a slot.
-- Personal preferences should only be collected by the connected operational tools and handled according to their policies.
+- The concierge recommends from the fictional treatment menu. Cal.com owns availability and booking; Typebot does not request live availability through Make.
+- Tally is reserved for post-booking intake and feedback. Typebot collects name and email only for an explicit Ask the spa request.
 - Direct booking links remain explicit external fallbacks and open in a new tab.
 
 ## Design references
@@ -54,7 +55,7 @@ npm run build   # static production build
 npm run lint    # Prettier formatting check
 ```
 
-The consent, safety, timing, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md).
+The recommendation, duration, booking, staff-help, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md).
 
 The Typebot public ID is widget configuration, not a secret. No API keys or credentials belong in this repository. Cal.com URLs are public booking destinations.
 

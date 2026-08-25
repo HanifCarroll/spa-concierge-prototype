@@ -23,22 +23,22 @@
     [
       '01',
       'Choose with confidence',
-      'Describe what you need and receive one considered recommendation.'
+      'Start in free text, add your goal and time, then receive one concise recommendation.'
     ],
     [
       '02',
-      'Prepare with intention',
-      'Share preferences and anything the team should understand before you arrive.'
+      'Book with clarity',
+      'View available times through Cal.com, the source of truth for your booking and contact details.'
     ],
     [
       '03',
       'Arrive already known',
-      'Your practitioner receives a concise summary, so the visit starts with context.'
+      'The operator receives a useful summary, while Tally gathers post-booking intake when it is relevant.'
     ],
     [
       '04',
       'Continue the care',
-      'Aftercare and a private check-in help the experience extend beyond the room.'
+      'Post-visit feedback helps the spa keep the experience thoughtful beyond the room.'
     ]
   ];
   const faqs = [
@@ -51,12 +51,12 @@
       'Plan to arrive a few minutes early so you can settle in without rushing. Wear what feels comfortable, and share preferences or accessibility needs when you book or speak with the concierge.'
     ],
     [
-      'What if I have a health or safety concern?',
-      'Please tell the concierge before booking. It will pause the recommendation and direct you to spa staff. Questions about medical suitability should be discussed with an appropriate healthcare professional.'
+      'How do I ask the spa a question?',
+      'Choose Ask the spa when you need staff help. Typebot collects your name and email for that request only; it does not handle booking.'
     ],
     [
-      'What happens after the treatment?',
-      'You will receive simple, practical aftercare guidance shaped around the treatment. Take the rest of the day at your own pace and reach out to the concierge if you need help choosing what comes next.'
+      'What happens after I book?',
+      'Cal.com confirms the appointment and collects booking contact details. Tally can then collect post-booking intake and feedback, and the operator receives a useful summary.'
     ]
   ];
 
@@ -223,7 +223,7 @@
       </div>
       <p class="hero-note">
         <span aria-hidden="true">✦</span> Private, practical guidance · no pressure
-        to book
+        to book · Cal.com handles the appointment
       </p>
     </div>
     <div class="hero-visual">
@@ -367,8 +367,9 @@
         <h2 id="experience-title">Held from start to finish.</h2>
         <div class="copper-rule"></div>
         <p>
-          A thoughtful recommendation is only the beginning. We carry what you
-          tell us through booking, preparation, and the care that follows.
+          A thoughtful recommendation is only the beginning. Cal.com handles the
+          booking, Tally supports post-booking intake and feedback, and the
+          operator receives a useful summary.
         </p>
       </div>
       <div class="experience-image-wrap">
@@ -393,13 +394,13 @@
         <h3>Make room for the pause.</h3>
       </div>
       <p>
-        Give yourself a few unhurried minutes before your appointment. Share
-        pressure preferences, sensitivities, and anything that would help you
-        feel at ease. Your comfort is part of the treatment.
+        Give yourself a few unhurried minutes before your appointment. Tally can
+        collect the details that help the team prepare, without adding another
+        decision to booking.
       </p>
       <p>
-        Afterward, keep the rest of your day gentle where you can. Your
-        practitioner will offer practical aftercare suited to your visit.
+        Afterward, a short Tally check-in gives the spa useful feedback and
+        helps the care continue beyond the room.
       </p>
     </div>
     <div class="final-cta content-pad" data-reveal>
