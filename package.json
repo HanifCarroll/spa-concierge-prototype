@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
-    "lint": "prettier --check ."
+    "lint": "prettier --check .",
+    "check:catalog": "node --experimental-strip-types scripts/check-catalog.ts"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.8",

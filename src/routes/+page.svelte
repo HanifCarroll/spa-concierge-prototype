@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { gsap } from 'gsap';
   import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { serviceCategories, spaServices } from '$lib/catalog';
 
   gsap.registerPlugin(ScrollTrigger);
 
@@ -13,12 +14,12 @@
     typebotReady?: Promise<unknown>;
   };
 
-  const secondaryServices = [
-    'Hot Stone Ritual',
-    'Scalp & Shoulder Release',
-    'Aromatherapy Reset',
-    'Seasonal Body Polish'
-  ];
+  let activeCategory = $state('All');
+  const visibleServices = $derived(
+    activeCategory === 'All'
+      ? spaServices
+      : spaServices.filter((service) => service.category === activeCategory)
+  );
   const steps = [
     [
       '01',
@@ -251,70 +252,55 @@
       </p>
     </div>
     <div class="service-layout content-pad" data-reveal>
-      <div class="primary-list">
-        <a
-          class="service-row"
-          href="https://cal.com/hanifcarroll/salt-cave-reset-45"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Salt Cave Reset, 45 min, book on Cal (opens in a new tab)"
-        >
-          <span class="service-index">01</span><span class="service-main"
-            ><span class="service-name">Salt Cave Reset</span><span
-              class="service-description"
-              >Quiet mineral air for a slower nervous system.</span
-            ></span
-          ><span class="service-duration">45 min</span><span
-            class="arrow"
-            aria-hidden="true">→</span
+      <div class="primary-list" aria-live="polite">
+        {#each visibleServices as service, index (service.key)}
+          <a
+            class="service-row"
+            href={service.bookingUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${service.name}, ${service.durationMinutes} minutes, book on Cal (opens in a new tab)`}
           >
-        </a>
-        <a
-          class="service-row"
-          href="https://cal.com/hanifcarroll/tranquility-massage-60"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Tranquility Massage, 60 min, book on Cal (opens in a new tab)"
-        >
-          <span class="service-index">02</span><span class="service-main"
-            ><span class="service-name">Tranquility Massage</span><span
-              class="service-description"
-              >Focused bodywork shaped around tension and pressure preference.</span
-            ></span
-          ><span class="service-duration">60 min</span><span
-            class="arrow"
-            aria-hidden="true">→</span
-          >
-        </a>
-        <a
-          class="service-row"
-          href="https://cal.com/hanifcarroll/radiance-facial-60"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Radiance Facial, 60 min, book on Cal (opens in a new tab)"
-        >
-          <span class="service-index">03</span><span class="service-main"
-            ><span class="service-name">Radiance Facial</span><span
-              class="service-description"
-              >A restorative facial for glow, hydration, and calm.</span
-            ></span
-          ><span class="service-duration">60 min</span><span
-            class="arrow"
-            aria-hidden="true">→</span
-          >
-        </a>
-      </div>
-      <div class="secondary-list">
-        <p class="eyebrow">Ask about</p>
-        <h3>More ways to restore</h3>
-        {#each secondaryServices as service (service)}
-          <button type="button" onclick={openConcierge}
-            >{service}<span class="arrow" aria-hidden="true">→</span><span
-              class="sr-only">Ask the concierge about {service}</span
-            ></button
-          >
+            <span class="service-index"
+              >{String(index + 1).padStart(2, '0')}</span
+            >
+            <span class="service-main">
+              <span class="service-name">{service.name}</span>
+              <span class="service-description">{service.shortDescription}</span
+              >
+              <span class="service-meta"
+                >{service.category} · {service.primaryGoal}</span
+              >
+            </span>
+            <span class="service-duration">{service.durationMinutes} min</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
         {/each}
       </div>
+      <aside class="secondary-list" aria-labelledby="filter-title">
+        <p class="eyebrow">Browse gently</p>
+        <h3 id="filter-title">Find your kind of care</h3>
+        <div
+          class="category-filters"
+          role="group"
+          aria-label="Filter services by category"
+        >
+          {#each serviceCategories as category (category)}
+            <button
+              class:active={activeCategory === category}
+              type="button"
+              aria-pressed={activeCategory === category}
+              onclick={() => (activeCategory = category)}
+              >{category}<span class="arrow" aria-hidden="true"
+                >{category === activeCategory ? '•' : '→'}</span
+              ></button
+            >
+          {/each}
+        </div>
+        <p class="filter-count">
+          Showing {visibleServices.length} of {spaServices.length} services.
+        </p>
+      </aside>
     </div>
     <div class="concierge-callout content-pad" data-reveal>
       <div>
@@ -756,6 +742,16 @@
     color: #66595d;
     line-height: 1.45;
   }
+  .service-meta,
+  .filter-count {
+    color: #8a7770;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .service-meta {
+    line-height: 1.3;
+  }
   .service-duration {
     color: #b86e45;
     font-size: 0.9rem;
@@ -781,6 +777,12 @@
     padding: 1.1rem 0;
     text-align: left;
     width: 100%;
+  }
+  .secondary-list button.active {
+    color: #b86e45;
+  }
+  .filter-count {
+    margin-top: 1.5rem;
   }
   .concierge-callout {
     align-items: center;

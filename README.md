@@ -12,12 +12,12 @@ A spa menu can leave people choosing by title instead of by what they actually n
 
 ## Product journey
 
-1. **Start in free text** — the visitor shares a goal and preferred duration.
-2. **Receive one concise recommendation** — Typebot keeps the decision focused.
+1. **Start in free text** — the visitor describes what they want, then chooses a goal, duration, and experience style.
+2. **Receive one concise recommendation** — Make loads the eligible Airtable services and DeepSeek chooses only from that shortlist.
 3. **Book in Cal.com** — Cal.com is the booking authority and collects booking contact details.
 4. **Support the visit** — Tally handles post-booking intake and feedback, while the operator receives a useful summary.
 
-Typebot is only for the deterministic recommendation flow and staff-help requests. When a visitor chooses **Ask the spa**, it collects their name and email so staff can follow up; it does not capture contact for booking. DeepSeek turns the visitor's supplied answers into a concise staff summary only after that choice—it does not select the treatment.
+When a visitor chooses **Ask the spa**, Typebot collects their name and email so staff can follow up; it does not capture contact for booking. The live recommendation is constrained by Airtable's active services and the selected duration. DeepSeek can rank those eligible services, but it cannot invent a treatment or alter its booking URL.
 
 This site is only the presentation layer. Live operations remain Typebot, Make, Airtable, Tally, Cal.com, and Gmail.
 
@@ -26,11 +26,13 @@ This site is only the presentation layer. Live operations remain Typebot, Make, 
 - SvelteKit 5 with TypeScript and Svelte runes.
 - `@sveltejs/adapter-static` with an `index.html` fallback for Cloudflare Pages.
 - One page with semantic sections, local photography, direct Cal.com booking links, and Typebot's official bubble embed.
+- A typed 20-service demo catalog in `src/lib/catalog.ts` renders the public menu with category filtering. Airtable is the editable source used by the live concierge.
 - No UI framework or component library.
 
 ## Guardrails
 
-- The concierge recommends from the fictional treatment menu. Cal.com owns availability and booking; Typebot does not request live availability through Make.
+- Make filters Airtable by active status and exact duration before DeepSeek sees any candidates. A specifically named treatment is never replaced when its duration does not fit.
+- Cal.com owns availability and booking; the concierge never invents an open time.
 - Tally is reserved for post-booking intake and feedback. Typebot collects name and email only for an explicit Ask the spa request.
 - Direct booking links remain explicit external fallbacks and open in a new tab.
 
@@ -52,12 +54,15 @@ Open `http://localhost:5173`.
 ```bash
 npm run check   # Svelte and TypeScript checks
 npm run build   # static production build
-npm run lint    # Prettier formatting check
+npm run lint          # Prettier formatting check
+npm run check:catalog # Catalog count, keys, URLs, active state, and durations
 ```
 
-The recommendation, duration, booking, staff-help, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md).
+The recommendation, duration, booking, staff-help, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes Massage, Facial, Body, Ritual, duration fit/mismatch, dedicated event links, and profile fallback links.
 
-The Typebot public ID is widget configuration, not a secret. No API keys or credentials belong in this repository. Cal.com URLs are public booking destinations.
+`scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. It contains public identifiers and webhook destinations, never API keys.
+
+The Typebot public ID is widget configuration, not a secret. No API keys belong in this repository. Cal.com URLs are public booking destinations.
 
 ## Cloudflare Pages
 
