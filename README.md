@@ -1,6 +1,6 @@
 # Tranquility Spa Concierge
 
-A fictional public portfolio prototype for a spa service concierge. It presents a polished, editorial interface for a no-code customer journey; it is not a client site or a claim of a real engagement.
+A working prototype showing how spas can turn service confusion into confident bookings and coordinate intake, aftercare, and feedback. It is a fictional portfolio project, not a client site or a claim of a real engagement.
 
 [View the live prototype](https://spa-concierge-prototype.pages.dev/)
 
