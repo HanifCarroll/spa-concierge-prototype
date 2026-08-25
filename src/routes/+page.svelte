@@ -5,15 +5,12 @@
 
   gsap.registerPlugin(ScrollTrigger);
 
-  type Voiceflow = {
-    chat?: {
-      open?: () => void;
-      load?: (options: unknown) => void | Promise<unknown>;
-    };
+  type TypebotClient = {
+    open?: () => void;
   };
   type ConciergeWindow = typeof globalThis & {
-    voiceflow?: Voiceflow;
-    voiceflowReady?: Promise<void>;
+    Typebot?: TypebotClient;
+    typebotReady?: Promise<unknown>;
   };
 
   const secondaryServices = [
@@ -65,8 +62,8 @@
 
   async function openConcierge() {
     const conciergeWindow = globalThis as ConciergeWindow;
-    await conciergeWindow.voiceflowReady;
-    conciergeWindow.voiceflow?.chat?.open?.();
+    await conciergeWindow.typebotReady;
+    conciergeWindow.Typebot?.open?.();
   }
 
   onMount(() => {

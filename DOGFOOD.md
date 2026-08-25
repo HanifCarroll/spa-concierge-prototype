@@ -1,6 +1,6 @@
 # Concierge dogfood matrix
 
-Run these in Voiceflow development mode. Start a new chat for every case and record the exact response. Do not use real contact information.
+Run these in Typebot development mode. Restart the preview for every case and use only synthetic contact information.
 
 | Case                   | Visitor request                                                            | Expected result                                                                           |
 | ---------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
