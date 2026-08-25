@@ -1,4 +1,10 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
   type Voiceflow = {
     chat?: {
       open?: () => void;
@@ -62,6 +68,80 @@
     await conciergeWindow.voiceflowReady;
     conciergeWindow.voiceflow?.chat?.open?.();
   }
+
+  onMount(() => {
+    const mm = gsap.matchMedia();
+    const ctx = gsap.context(() => {
+      mm.add(
+        {
+          desktop: '(min-width: 801px)',
+          reduceMotion: '(prefers-reduced-motion: reduce)'
+        },
+        ({ conditions }) => {
+          if (conditions?.reduceMotion) {
+            return;
+          }
+
+          gsap
+            .timeline({ defaults: { ease: 'power3.out' } })
+            .from(
+              '.hero .eyebrow, .hero h1, .hero .copper-rule, .hero-lede, .hero .actions, .hero-note',
+              {
+                duration: 0.75,
+                opacity: 0,
+                y: 18,
+                stagger: 0.08
+              }
+            )
+            .from('.hero-visual', { duration: 1, opacity: 0, y: 12 }, '-=0.55');
+
+          gsap.utils
+            .toArray<HTMLElement>('[data-reveal]')
+            .forEach((element) => {
+              gsap.from(element, {
+                duration: 0.85,
+                ease: 'power3.out',
+                opacity: 0,
+                scrollTrigger: {
+                  trigger: element,
+                  start: 'top 84%',
+                  once: true
+                },
+                y: 24
+              });
+            });
+
+          if (conditions?.desktop) {
+            gsap.to('.hero-image', {
+              ease: 'none',
+              scrollTrigger: {
+                end: 'bottom top',
+                scrub: true,
+                start: 'top top',
+                trigger: '.hero'
+              },
+              yPercent: 3
+            });
+            gsap.to('.experience-intro img', {
+              ease: 'none',
+              scrollTrigger: {
+                end: 'bottom 20%',
+                scrub: true,
+                start: 'top bottom',
+                trigger: '.experience-image-wrap'
+              },
+              yPercent: 3
+            });
+          }
+        }
+      );
+    });
+
+    return () => {
+      ctx.revert();
+      mm.revert();
+    };
+  });
 </script>
 
 <svelte:head>
@@ -164,7 +244,7 @@
     id="services"
     aria-labelledby="services-title"
   >
-    <div class="section-intro content-pad">
+    <div class="section-intro content-pad" data-reveal>
       <p class="eyebrow">The menu</p>
       <h2 id="services-title">A considered menu, made easier.</h2>
       <div class="copper-rule"></div>
@@ -173,7 +253,7 @@
         how you want to feel.
       </p>
     </div>
-    <div class="service-layout content-pad">
+    <div class="service-layout content-pad" data-reveal>
       <div class="primary-list">
         <a
           class="service-row"
@@ -232,14 +312,14 @@
         <h3>More ways to restore</h3>
         {#each secondaryServices as service (service)}
           <button type="button" onclick={openConcierge}
-            >{service}<span aria-hidden="true">→</span><span class="sr-only"
-              >Ask the concierge about {service}</span
+            >{service}<span class="arrow" aria-hidden="true">→</span><span
+              class="sr-only">Ask the concierge about {service}</span
             ></button
           >
         {/each}
       </div>
     </div>
-    <div class="concierge-callout content-pad">
+    <div class="concierge-callout content-pad" data-reveal>
       <div>
         <p class="eyebrow">A little help is enough</p>
         <h3>Not sure where to begin?</h3>
@@ -259,7 +339,7 @@
     id="about"
     aria-labelledby="about-title"
   >
-    <div class="approach-copy content-pad">
+    <div class="approach-copy content-pad" data-reveal>
       <p class="eyebrow">Our approach</p>
       <h2 id="about-title">Care should feel personal before it begins.</h2>
       <p class="large-copy">
@@ -273,7 +353,7 @@
         concierge helps make that first decision feel lighter.
       </p>
     </div>
-    <div class="approach-aside">
+    <div class="approach-aside" data-reveal>
       <span class="aside-mark" aria-hidden="true">T</span>
       <p>Less noise.<br />More attention.<br />A place to reset.</p>
     </div>
@@ -284,7 +364,7 @@
     id="experience"
     aria-labelledby="experience-title"
   >
-    <div class="experience-intro content-pad">
+    <div class="experience-intro content-pad" data-reveal>
       <div>
         <p class="eyebrow">The visit</p>
         <h2 id="experience-title">Held from start to finish.</h2>
@@ -301,7 +381,7 @@
         /><span class="image-caption">A quiet transition between moments</span>
       </div>
     </div>
-    <div class="steps content-pad">
+    <div class="steps content-pad" data-reveal>
       {#each steps as step (step[0])}
         <article class="step">
           <div class="step-number">{step[0]} <span></span></div>
@@ -310,7 +390,7 @@
         </article>
       {/each}
     </div>
-    <div class="visit-details content-pad">
+    <div class="visit-details content-pad" data-reveal>
       <div>
         <p class="eyebrow">Before you arrive</p>
         <h3>Make room for the pause.</h3>
@@ -325,7 +405,7 @@
         practitioner will offer practical aftercare suited to your visit.
       </p>
     </div>
-    <div class="final-cta content-pad">
+    <div class="final-cta content-pad" data-reveal>
       <h2>Begin with what you need today.</h2>
       <button class="button button-light" type="button" onclick={openConcierge}
         >Help me choose <span aria-hidden="true">→</span></button
@@ -334,11 +414,11 @@
   </section>
 
   <section class="faq section-rule" id="faq" aria-labelledby="faq-title">
-    <div class="content-pad faq-heading">
+    <div class="content-pad faq-heading" data-reveal>
       <p class="eyebrow">Good to know</p>
       <h2 id="faq-title">A few things, answered.</h2>
     </div>
-    <div class="faq-list content-pad">
+    <div class="faq-list content-pad" data-reveal>
       {#each faqs as faq (faq[0])}
         <details>
           <summary>{faq[0]}<span aria-hidden="true">+</span></summary>
@@ -383,6 +463,9 @@
 <style>
   :global(*) {
     box-sizing: border-box;
+  }
+  :global(:root) {
+    --ease-out-premium: cubic-bezier(0.16, 1, 0.3, 1);
   }
   :global(html) {
     scroll-behavior: smooth;
@@ -455,6 +538,7 @@
   nav a,
   .footer-links a {
     text-decoration: none;
+    transition: color 0.35s var(--ease-out-premium);
   }
   nav a:hover,
   .footer-links a:hover,
@@ -473,9 +557,9 @@
     text-align: left;
     text-decoration: none;
     transition:
-      background 0.2s ease,
-      color 0.2s ease,
-      transform 0.2s ease;
+      background 0.4s var(--ease-out-premium),
+      color 0.4s var(--ease-out-premium),
+      transform 0.4s var(--ease-out-premium);
   }
   .header-cta {
     background: #29172b;
@@ -525,6 +609,7 @@
     padding-top: 5rem;
   }
   .hero-visual {
+    overflow: hidden;
     position: relative;
   }
   .hero-image {
@@ -533,6 +618,7 @@
     min-height: 40rem;
     object-fit: cover;
     width: 100%;
+    will-change: transform;
   }
   .image-caption {
     bottom: 1rem;
@@ -641,9 +727,20 @@
   .service-row {
     grid-template-columns: 2.2rem 1fr auto auto;
   }
+  .service-name,
+  .service-row .arrow,
+  .secondary-list button {
+    transition:
+      color 0.4s var(--ease-out-premium),
+      transform 0.4s var(--ease-out-premium);
+  }
   .service-row:hover .service-name,
   .secondary-list button:hover {
     color: #b86e45;
+  }
+  .service-row:hover .arrow,
+  .secondary-list button:hover .arrow {
+    transform: translateX(0.35rem);
   }
   .service-index {
     color: #b86e45;
@@ -760,6 +857,7 @@
     max-width: 9ch;
   }
   .experience-image-wrap {
+    overflow: hidden;
     position: relative;
   }
   .experience-intro img {
@@ -768,6 +866,7 @@
     max-height: 34rem;
     object-fit: cover;
     width: 100%;
+    will-change: transform;
   }
   .steps {
     display: grid;
