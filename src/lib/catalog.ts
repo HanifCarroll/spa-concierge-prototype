@@ -1,3 +1,73 @@
+export type BookingPoolId =
+  | 'massage-bodywork'
+  | 'facials'
+  | 'body-treatments'
+  | 'salt-cave'
+  | 'restorative-rituals'
+  | 'consultation';
+
+export type BookingPool = {
+  id: BookingPoolId;
+  name: string;
+  calSlug: string;
+  allowedDurations: readonly number[];
+};
+
+export const bookingPools = [
+  {
+    id: 'massage-bodywork',
+    name: 'Massage & Bodywork',
+    calSlug: 'massage-bodywork',
+    allowedDurations: [30, 45, 60, 75, 90]
+  },
+  {
+    id: 'facials',
+    name: 'Facials',
+    calSlug: 'facials',
+    allowedDurations: [30, 60, 75]
+  },
+  {
+    id: 'body-treatments',
+    name: 'Body Treatments',
+    calSlug: 'body-treatments',
+    allowedDurations: [60, 75, 90]
+  },
+  {
+    id: 'salt-cave',
+    name: 'Salt Cave',
+    calSlug: 'salt-cave',
+    allowedDurations: [45]
+  },
+  {
+    id: 'restorative-rituals',
+    name: 'Restorative Rituals',
+    calSlug: 'restorative-rituals',
+    allowedDurations: [30, 45]
+  },
+  {
+    id: 'consultation',
+    name: 'Consultation',
+    calSlug: 'consultation',
+    allowedDurations: [30]
+  }
+] as const satisfies readonly BookingPool[];
+
+const bookingPoolById = Object.fromEntries(
+  bookingPools.map((pool) => [pool.id, pool])
+) as unknown as Record<BookingPoolId, BookingPool>;
+
+export const createBookingUrl = (
+  poolId: BookingPoolId,
+  durationMinutes: number,
+  serviceName: string
+) => {
+  const params = new URLSearchParams({
+    duration: String(durationMinutes),
+    notes: `Recommended service: ${serviceName}`
+  });
+  return `https://cal.com/hanifcarroll/${bookingPoolById[poolId].calSlug}?${params}`;
+};
+
 export type ServiceCategory = 'Massage' | 'Facial' | 'Body' | 'Ritual';
 export type TouchLevel = 'None' | 'Low' | 'Moderate' | 'High';
 export type Pressure = 'Light' | 'Moderate' | 'Firm' | 'Flexible';
@@ -6,6 +76,7 @@ export type Energy = 'Restorative' | 'Balanced' | 'Invigorating';
 export type SpaService = {
   key: string;
   name: string;
+  poolId: BookingPoolId;
   category: ServiceCategory;
   shortDescription: string;
   durationMinutes: number;
@@ -19,12 +90,11 @@ export type SpaService = {
   priority: number;
 };
 
-const calProfile = 'https://cal.com/hanifcarroll';
-
 export const spaServices = [
   {
     key: 'salt-cave-reset',
     name: 'Salt Cave Reset',
+    poolId: 'salt-cave',
     category: 'Ritual',
     shortDescription: 'Quiet mineral air for a slower nervous system.',
     durationMinutes: 45,
@@ -34,12 +104,13 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: 'https://cal.com/hanifcarroll/salt-cave-reset-45',
+    bookingUrl: createBookingUrl('salt-cave', 45, 'Salt Cave Reset'),
     priority: 1
   },
   {
     key: 'tranquility-massage',
     name: 'Tranquility Massage',
+    poolId: 'massage-bodywork',
     category: 'Massage',
     shortDescription: 'Focused bodywork shaped around tension and preference.',
     durationMinutes: 60,
@@ -49,12 +120,13 @@ export const spaServices = [
     pressure: 'Flexible',
     energy: 'Balanced',
     active: true,
-    bookingUrl: 'https://cal.com/hanifcarroll/tranquility-massage-60',
+    bookingUrl: createBookingUrl('massage-bodywork', 60, 'Tranquility Massage'),
     priority: 2
   },
   {
     key: 'radiance-facial',
     name: 'Radiance Facial',
+    poolId: 'facials',
     category: 'Facial',
     shortDescription: 'A restorative facial for glow, hydration, and calm.',
     durationMinutes: 60,
@@ -64,12 +136,13 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: 'https://cal.com/hanifcarroll/radiance-facial-60',
+    bookingUrl: createBookingUrl('facials', 60, 'Radiance Facial'),
     priority: 3
   },
   {
     key: 'deep-release-massage',
     name: 'Deep Release Massage',
+    poolId: 'massage-bodywork',
     category: 'Massage',
     shortDescription: 'Intentional, slower work for areas carrying the day.',
     durationMinutes: 75,
@@ -79,12 +152,17 @@ export const spaServices = [
     pressure: 'Firm',
     energy: 'Balanced',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'massage-bodywork',
+      75,
+      'Deep Release Massage'
+    ),
     priority: 4
   },
   {
     key: 'scalp-shoulder-release',
     name: 'Scalp & Shoulder Release',
+    poolId: 'massage-bodywork',
     category: 'Massage',
     shortDescription:
       'Targeted comfort for the places that hold screen-time stress.',
@@ -95,12 +173,17 @@ export const spaServices = [
     pressure: 'Flexible',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'massage-bodywork',
+      30,
+      'Scalp & Shoulder Release'
+    ),
     priority: 5
   },
   {
     key: 'aromatherapy-reset',
     name: 'Aromatherapy Reset',
+    poolId: 'restorative-rituals',
     category: 'Ritual',
     shortDescription:
       'A sensory pause pairing breath, scent, and gentle touch.',
@@ -111,12 +194,17 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'restorative-rituals',
+      45,
+      'Aromatherapy Reset'
+    ),
     priority: 6
   },
   {
     key: 'seasonal-body-polish',
     name: 'Seasonal Body Polish',
+    poolId: 'body-treatments',
     category: 'Body',
     shortDescription:
       'A renewing polish and finish for soft, comfortable skin.',
@@ -127,12 +215,13 @@ export const spaServices = [
     pressure: 'Moderate',
     energy: 'Invigorating',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('body-treatments', 60, 'Seasonal Body Polish'),
     priority: 7
   },
   {
     key: 'hydration-facial',
     name: 'Deep Hydration Facial',
+    poolId: 'facials',
     category: 'Facial',
     shortDescription: 'A cushioned facial ritual for skin that feels thirsty.',
     durationMinutes: 75,
@@ -142,12 +231,13 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('facials', 75, 'Deep Hydration Facial'),
     priority: 8
   },
   {
     key: 'sculpting-facial',
     name: 'Sculpting Facial',
+    poolId: 'facials',
     category: 'Facial',
     shortDescription:
       'Lifting massage and considered care for a brightened look.',
@@ -158,12 +248,13 @@ export const spaServices = [
     pressure: 'Moderate',
     energy: 'Invigorating',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('facials', 60, 'Sculpting Facial'),
     priority: 9
   },
   {
     key: 'foot-grounding-ritual',
     name: 'Foot Grounding Ritual',
+    poolId: 'restorative-rituals',
     category: 'Ritual',
     shortDescription:
       'Warm towels and focused care to bring attention back down.',
@@ -174,12 +265,17 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'restorative-rituals',
+      30,
+      'Foot Grounding Ritual'
+    ),
     priority: 10
   },
   {
     key: 'back-renewal',
     name: 'Back Renewal',
+    poolId: 'massage-bodywork',
     category: 'Body',
     shortDescription:
       'A clarifying back treatment with massage and warm finish.',
@@ -190,12 +286,13 @@ export const spaServices = [
     pressure: 'Moderate',
     energy: 'Balanced',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('massage-bodywork', 45, 'Back Renewal'),
     priority: 11
   },
   {
     key: 'warm-stone-ritual',
     name: 'Warm Stone Ritual',
+    poolId: 'massage-bodywork',
     category: 'Ritual',
     shortDescription:
       'Gentle warmth and flowing touch for a deeply quiet pause.',
@@ -206,12 +303,13 @@ export const spaServices = [
     pressure: 'Moderate',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('massage-bodywork', 75, 'Warm Stone Ritual'),
     priority: 12
   },
   {
     key: 'restorative-massage',
     name: 'Restorative Massage',
+    poolId: 'massage-bodywork',
     category: 'Massage',
     shortDescription: 'Unhurried full-body touch for a softer pace.',
     durationMinutes: 90,
@@ -221,12 +319,13 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('massage-bodywork', 90, 'Restorative Massage'),
     priority: 13
   },
   {
     key: 'energizing-massage',
     name: 'Energizing Massage',
+    poolId: 'massage-bodywork',
     category: 'Massage',
     shortDescription: 'Brisk, flowing bodywork to leave you feeling awake.',
     durationMinutes: 60,
@@ -236,12 +335,13 @@ export const spaServices = [
     pressure: 'Moderate',
     energy: 'Invigorating',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('massage-bodywork', 60, 'Energizing Massage'),
     priority: 14
   },
   {
     key: 'express-glow-facial',
     name: 'Express Glow Facial',
+    poolId: 'facials',
     category: 'Facial',
     shortDescription:
       'A focused refresh when time is short but care still matters.',
@@ -252,12 +352,13 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Invigorating',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('facials', 30, 'Express Glow Facial'),
     priority: 15
   },
   {
     key: 'body-balance-wrap',
     name: 'Body Balance Wrap',
+    poolId: 'body-treatments',
     category: 'Body',
     shortDescription:
       'A cocooning body ritual finished with nourishing hydration.',
@@ -268,12 +369,13 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('body-treatments', 75, 'Body Balance Wrap'),
     priority: 16
   },
   {
     key: 'hand-and-arm-recovery',
     name: 'Hand & Arm Recovery',
+    poolId: 'massage-bodywork',
     category: 'Body',
     shortDescription:
       'Focused relief for hands, wrists, and arms that do too much.',
@@ -284,12 +386,13 @@ export const spaServices = [
     pressure: 'Flexible',
     energy: 'Balanced',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl('massage-bodywork', 30, 'Hand & Arm Recovery'),
     priority: 17
   },
   {
     key: 'quiet-scalp-ritual',
     name: 'Quiet Scalp Ritual',
+    poolId: 'restorative-rituals',
     category: 'Ritual',
     shortDescription:
       'A low-light scalp treatment designed for gentle unwinding.',
@@ -300,12 +403,17 @@ export const spaServices = [
     pressure: 'Light',
     energy: 'Restorative',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'restorative-rituals',
+      45,
+      'Quiet Scalp Ritual'
+    ),
     priority: 18
   },
   {
     key: 'custom-care-consultation',
     name: 'Custom Care Consultation',
+    poolId: 'consultation',
     category: 'Ritual',
     shortDescription: 'A slower conversation to shape the right first visit.',
     durationMinutes: 30,
@@ -315,12 +423,17 @@ export const spaServices = [
     pressure: 'Flexible',
     energy: 'Balanced',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'consultation',
+      30,
+      'Custom Care Consultation'
+    ),
     priority: 19
   },
   {
     key: 'seasonal-reset-ritual',
     name: 'Seasonal Reset Ritual',
+    poolId: 'body-treatments',
     category: 'Body',
     shortDescription:
       'A changing combination of grounding body care for the season.',
@@ -331,7 +444,11 @@ export const spaServices = [
     pressure: 'Flexible',
     energy: 'Balanced',
     active: true,
-    bookingUrl: calProfile,
+    bookingUrl: createBookingUrl(
+      'body-treatments',
+      90,
+      'Seasonal Reset Ritual'
+    ),
     priority: 20
   }
 ] as const satisfies readonly SpaService[];

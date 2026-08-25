@@ -4,27 +4,33 @@ Run these in Typebot development mode with synthetic contact information. The
 approved flow is: **free text → goal → duration → experience preference → concise recommendation →
 View available times / Change my answers / Ask the spa**.
 
-The SvelteKit menu mirrors the 20-service demo catalog. The live concierge loads
-active, duration-eligible services from Airtable through Make, then asks DeepSeek
+The SvelteKit menu mirrors the 20-service demo catalog. The six booking pools
+are the local link model: services in a pool share its Cal.com event slug while
+the generated URL preserves each service and duration as query prefills. The live
+concierge loads active, duration-eligible services from Airtable through Make, then asks DeepSeek
 to select only from that shortlist. Cal.com is the booking authority and
 collects booking contact details. Typebot collects name
 and email only after an explicit **Ask the spa** choice. Tally is for
 post-booking intake and feedback. The operator should receive a useful summary.
 
-| Case               | Visitor request                                         | Expected result                                                                                |
-| ------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Massage fit        | Neck and back tension, firm pressure, quiet, 60 minutes | Tranquility Massage; show the three recommendation actions                                     |
-| Salt cave fit      | Quiet, low-touch reset, 45 minutes                      | Salt Cave Reset; show the three recommendation actions                                         |
-| Facial fit         | Hydration and glow, 60 minutes                          | Radiance Facial; show the three recommendation actions                                         |
-| Catalog categories | Browse Massage, Facial, Body, and Ritual                | Filter the menu and verify the visible count updates accessibly                                |
-| Profile fallback   | Ask to book Deep Release Massage, 75 minutes            | Use the general Cal profile URL; do not invent a dedicated event URL                           |
-| Duration mismatch  | Ask for Deep Release Massage with only 30 minutes       | Say there is no confident match; do not silently substitute a shorter treatment                |
-| Free-text context  | Asks how salt cave and massage differ                   | Continue to the fixed goal and duration questions; preserve the request for a staff summary    |
-| Outside catalogue  | Requests a 30-minute deep-tissue massage                | Do not invent a service; use the selected goal and duration rules                              |
-| Uncertain visitor  | Selects I’m still not sure                              | Use the remaining answers to make one approved recommendation or offer staff help              |
-| Change answers     | Chooses Change my answers                               | Return to the goal and duration path                                                           |
-| View times         | Chooses View available times                            | Send the visitor to the matching Cal.com booking destination; Cal.com collects booking contact |
-| Ask the spa        | Chooses Ask the spa                                     | Ask for name and email, then send the staff-help request and useful summary                    |
+| Case               | Visitor request                                         | Expected result                                                                                        |
+| ------------------ | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Massage fit        | Neck and back tension, firm pressure, quiet, 60 minutes | Tranquility Massage; use `massage-bodywork`; show the three actions                                    |
+| Facials fit        | Hydration and glow, 60 minutes                          | Radiance Facial; use `facials`; show the three actions                                                 |
+| Body fit           | Renewed skin, 60 minutes                                | Seasonal Body Polish; use `body-treatments`; show the three actions                                    |
+| Salt cave fit      | Quiet, low-touch reset, 45 minutes                      | Salt Cave Reset; use `salt-cave`; show the three actions                                               |
+| Restorative fit    | Gentle sensory pause, 45 minutes                        | Aromatherapy Reset; use `restorative-rituals`; show the three actions                                  |
+| Consultation fit   | Unsure where to start, 30 minutes                       | Custom Care Consultation; use `consultation`; show the three actions                                   |
+| Shared pool links  | Compare Tranquility Massage and Deep Release Massage    | Same Cal event path; each keeps its own `duration` and built-in `notes=Recommended service: …` prefill |
+| Catalog categories | Browse Massage, Facial, Body, and Ritual                | Filter the menu and verify the visible count updates accessibly                                        |
+| Generated booking  | Ask to book Deep Release Massage, 75 minutes            | Use the massage-bodywork pool URL with `duration=75` and its service prefill                           |
+| Duration mismatch  | Ask for Deep Release Massage with only 30 minutes       | Say there is no confident match; do not silently substitute a shorter treatment                        |
+| Free-text context  | Asks how salt cave and massage differ                   | Continue to the fixed goal and duration questions; preserve the request for a staff summary            |
+| Outside catalogue  | Requests a 30-minute deep-tissue massage                | Do not invent a service; use the selected goal and duration rules                                      |
+| Uncertain visitor  | Selects I’m still not sure                              | Use the remaining answers to make one approved recommendation or offer staff help                      |
+| Change answers     | Chooses Change my answers                               | Return to the goal and duration path                                                                   |
+| View times         | Chooses View available times                            | Send the visitor to the matching Cal.com booking destination; Cal.com collects booking contact         |
+| Ask the spa        | Chooses Ask the spa                                     | Ask for name and email, then send the staff-help request and useful summary                            |
 
 ## Pass criteria
 

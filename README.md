@@ -26,7 +26,7 @@ This site is only the presentation layer. Live operations remain Typebot, Make, 
 - SvelteKit 5 with TypeScript and Svelte runes.
 - `@sveltejs/adapter-static` with an `index.html` fallback for Cloudflare Pages.
 - One page with semantic sections, local photography, direct Cal.com booking links, and Typebot's official bubble embed.
-- A typed 20-service demo catalog in `src/lib/catalog.ts` renders the public menu with category filtering. Airtable is the editable source used by the live concierge.
+- A typed 20-service demo catalog in `src/lib/catalog.ts` renders the public menu with category filtering. Six booking pools map services to shared Cal.com events; links are generated with duration and Cal’s built-in notes prefill. Airtable is the editable source used by the live concierge.
 - No UI framework or component library.
 
 ## Guardrails
@@ -55,10 +55,10 @@ Open `http://localhost:5173`.
 npm run check   # Svelte and TypeScript checks
 npm run build   # static production build
 npm run lint          # Prettier formatting check
-npm run check:catalog # Catalog count, keys, URLs, active state, and durations
+npm run check:catalog # Catalog pools, mappings, URLs, active state, and durations
 ```
 
-The recommendation, duration, booking, staff-help, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes Massage, Facial, Body, Ritual, duration fit/mismatch, dedicated event links, and profile fallback links.
+The recommendation, duration, booking, staff-help, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes one booking-pool case for each of Massage & Bodywork, Facials, Body Treatments, Salt Cave, Restorative Rituals, and Consultation. Services in the same pool share one Cal event while retaining their own duration and built-in notes prefills.
 
 `scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. It contains public identifiers and webhook destinations, never API keys.
 
