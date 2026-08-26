@@ -44,6 +44,8 @@ post-booking intake and feedback. The operator should receive a useful summary.
 - No service, duration, price, availability, or operator detail is invented.
 - The operator summary includes the visitor's free-text request, goal, duration,
   recommendation, and staff-help contact when provided.
+- A real Cal.com booking triggers **Spa Concierge — Booking Created**, which creates the Airtable appointment and emails the existing Tally intake link to the guest.
+- The Airtable **Complete visit** action triggers **Spa Concierge — Visit Completed**, which sends the visit note, aftercare guidance, and existing Tally feedback link.
 
 ## Preview API testing notes
 
@@ -57,11 +59,13 @@ post-booking intake and feedback. The operator should receive a useful summary.
 
 ## Release matrix
 
-| Surface            | Check                                                                     |
-| ------------------ | ------------------------------------------------------------------------- |
-| Local presentation | `npm run check`, `npm run build`, `npm run lint`, `npm run check:catalog` |
-| Typebot preview    | Fresh profile: preview appears once; open or dismiss: it stays hidden     |
-| Core flow          | Recommendation, duration mismatch, Cal.com handoff, Ask the spa           |
-| Public smoke test  | Desktop and mobile: bubble opens; links and copy match this flow          |
+| Surface            | Check                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| Local presentation | `npm run check`, `npm run build`, `npm run lint`, `npm run check:catalog`               |
+| Typebot preview    | Fresh profile: preview appears once; open or dismiss: it stays hidden                   |
+| Core flow          | Recommendation, duration mismatch, Cal.com handoff, Ask the spa                         |
+| Booking automation | Complete a real Cal booking; verify one Airtable appointment and the Tally intake email |
+| Visit automation   | Use Airtable **Complete visit**; verify aftercare and the Tally feedback email          |
+| Public smoke test  | Desktop and mobile: bubble opens; links and copy match this flow                        |
 
 Keep release checks manual and small. No new infrastructure is needed.

@@ -21,6 +21,8 @@ When a visitor chooses **Ask the spa**, Typebot collects their name and email so
 
 This site is only the presentation layer. Live operations remain Typebot, Make, Airtable, Tally, Cal.com, and Gmail.
 
+The approved production-like handoff is: a real Cal.com booking triggers Make scenario **Spa Concierge — Booking Created**, which records the appointment in Airtable and emails the guest the existing Tally intake link. After the visit, the Airtable operator action **Complete visit** triggers **Spa Concierge — Visit Completed**, which sends the visit note, aftercare guidance, and existing Tally feedback link to the guest.
+
 ## Architecture
 
 - SvelteKit 5 with TypeScript and Svelte runes.
@@ -58,7 +60,7 @@ npm run lint          # Prettier formatting check
 npm run check:catalog # Catalog pools, mappings, URLs, active state, and durations
 ```
 
-The recommendation, duration, booking, staff-help, and catalogue scenarios used to test the concierge are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes one booking-pool case for each of Massage & Bodywork, Facials, Body Treatments, Salt Cave, Restorative Rituals, and Consultation. Services in the same pool share one Cal event while retaining their own duration and built-in notes prefills.
+The recommendation, duration, booking, staff-help, catalogue, and post-visit automation checks are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes one booking-pool case for each of Massage & Bodywork, Facials, Body Treatments, Salt Cave, Restorative Rituals, and Consultation. Services in the same pool share one Cal event while retaining their own duration and built-in notes prefills.
 
 `scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. It contains public identifiers and webhook destinations, never API keys.
 
