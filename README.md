@@ -16,7 +16,7 @@ A spa menu can leave people choosing by title instead of by what they actually n
 
 1. **Start in free text** — the visitor describes what they want, then chooses a goal, duration, and experience style.
 2. **Receive one concise recommendation** — Make loads the eligible Airtable services and DeepSeek chooses only from that shortlist.
-3. **Book in Cal.com** — Cal.com is the booking authority and collects booking contact details.
+3. **Book in Cal.com** — the visitor can either open the reliable full Cal calendar, or choose a real Cal slot inline through the optional Make scenarios. Cal.com remains the booking authority.
 4. **Support the visit** — Tally handles post-booking intake and feedback, while the operator receives a useful summary.
 
 When a visitor chooses **Ask the spa**, Typebot collects their name and email so staff can follow up; it does not capture contact for booking. The live recommendation is constrained by Airtable's active services and the selected duration. DeepSeek can rank those eligible services, but it cannot invent a treatment or alter its booking URL.
@@ -36,7 +36,8 @@ The approved production-like handoff is: a real Cal.com booking triggers Make sc
 ## Guardrails
 
 - Make filters Airtable by active status and exact duration before DeepSeek sees any candidates. A specifically named treatment is never replaced when its duration does not fit.
-- Cal.com owns availability and booking; the concierge never invents an open time.
+- Cal.com owns availability and booking; the concierge never invents an open time. The inline path displays only slots returned by Make/Cal and sends the selected service, duration, slot, timezone, and contact to the Create Booking scenario.
+- The full Cal calendar is an explicit fallback and remains unchanged. Inline Create Booking must only create the Cal booking; the existing **Booking Created** webhook remains the sole path for the Airtable appointment and intake email.
 - Tally is reserved for post-booking intake and feedback. Typebot collects name and email only for an explicit Ask the spa request.
 - Direct booking links remain explicit external fallbacks and open in a new tab.
 
@@ -64,7 +65,7 @@ npm run check:catalog # Catalog pools, mappings, URLs, active state, and duratio
 
 The recommendation, duration, booking, staff-help, catalogue, and post-visit automation checks are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes one booking-pool case for each of Massage & Bodywork, Facials, Body Treatments, Salt Cave, Restorative Rituals, and Consultation. Services in the same pool share one Cal event while retaining their own duration and built-in notes prefills.
 
-`scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. It contains public identifiers and webhook destinations, never API keys.
+`scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. Set `SPA_FIND_AVAILABILITY_WEBHOOK` and `SPA_CREATE_BOOKING_WEBHOOK` to the exact existing Make webhook URLs when building; the script contains no API keys. The scenarios must return `{data:{slots,message}}` and `{data:{message}}` respectively. `message` should include a no-slots or recovery instruction when applicable.
 
 The Typebot public ID is widget configuration, not a secret. No API keys belong in this repository. Cal.com URLs are public booking destinations.
 

@@ -5,6 +5,15 @@ const output = process.argv[3] ?? '/tmp/spa-typebot-production.json';
 const payload = JSON.parse(fs.readFileSync(input, 'utf8'));
 const typebot = payload.typebot;
 
+// Make webhook URLs are deployment inputs, not repository secrets.
+const findAvailabilityWebhook = process.env.SPA_FIND_AVAILABILITY_WEBHOOK;
+const createBookingWebhook = process.env.SPA_CREATE_BOOKING_WEBHOOK;
+if (!findAvailabilityWebhook || !createBookingWebhook) {
+  throw new Error(
+    'Set SPA_FIND_AVAILABILITY_WEBHOOK and SPA_CREATE_BOOKING_WEBHOOK to the existing Make webhook URLs.'
+  );
+}
+
 const variableIds = Object.fromEntries(
   typebot.variables.map((variable) => [variable.name, variable.id])
 );
@@ -29,6 +38,26 @@ const variables = [
   {
     id: 'spa_recommendation_json',
     name: 'recommendation_json',
+    isSessionVariable: true
+  },
+  {
+    id: 'spa_available_slots',
+    name: 'available_slots',
+    isSessionVariable: true
+  },
+  {
+    id: 'spa_availability_message',
+    name: 'availability_message',
+    isSessionVariable: true
+  },
+  {
+    id: 'spa_selected_slot',
+    name: 'selected_slot',
+    isSessionVariable: true
+  },
+  {
+    id: 'spa_booking_result',
+    name: 'booking_result',
     isSessionVariable: true
   }
 ].filter(
@@ -272,7 +301,8 @@ typebot.groups = [
     graphCoordinates: { x: 2480, y: 80 },
     blocks: [
       choice('spa_action_choice', variableIds.next_step, [
-        ['spa_action_book', 'View available times', 'edge_action_book'],
+        ['spa_action_book', 'Open full Cal calendar', 'edge_action_book'],
+        ['spa_action_inline', 'Choose a time here', 'edge_action_inline'],
         ['spa_action_change', 'Change my answers', 'edge_action_change'],
         ['spa_action_staff', 'Ask the spa', 'edge_action_staff']
       ])
@@ -280,14 +310,135 @@ typebot.groups = [
   },
   {
     id: 'spa_booking',
-    title: 'Open Booking',
-    graphCoordinates: { x: 2880, y: -120 },
+    title: 'Open Full Cal Calendar',
+    graphCoordinates: { x: 2880, y: -160 },
     blocks: [
       {
         id: 'spa_booking_redirect',
         type: 'Redirect',
         options: { url: '{{booking_url}}', isNewTab: true }
       }
+    ]
+  },
+  {
+    id: 'spa_inline_availability',
+    title: 'Find Availability (Make)',
+    graphCoordinates: { x: 2880, y: 40 },
+    blocks: [
+      {
+        id: 'spa_find_availability_webhook',
+        type: 'Webhook',
+        options: {
+          isCustomBody: true,
+          isExecutedOnClient: false,
+          responseVariableMapping: [
+            {
+              id: 'spa_map_available_slots',
+              variableId: 'spa_available_slots',
+              bodyPath: 'data.slots'
+            },
+            {
+              id: 'spa_map_availability_message',
+              variableId: 'spa_availability_message',
+              bodyPath: 'data.message'
+            }
+          ],
+          webhook: {
+            method: 'POST',
+            url: findAvailabilityWebhook,
+            headers: [
+              {
+                id: 'spa_availability_content_type',
+                key: 'Content-Type',
+                value: 'application/json'
+              }
+            ],
+            queryParams: [],
+            body: '{"booking_url":"{{booking_url}}","recommendation":"{{recommendation}}","duration_minutes":{{duration_minutes}},"timezone":"America/Los_Angeles"}'
+          }
+        }
+      },
+      text(
+        'spa_availability_text',
+        '{{availability_message}}\\n\\n{{available_slots}}',
+        'edge_availability_slot_prompt'
+      )
+    ]
+  },
+  {
+    id: 'spa_inline_slot',
+    title: 'Select Inline Slot',
+    graphCoordinates: { x: 3280, y: 40 },
+    blocks: [
+      text(
+        'spa_slot_prompt',
+        'Enter the date and time you want to book (exactly as shown above).'
+      ),
+      {
+        id: 'spa_selected_slot_input',
+        outgoingEdgeId: 'edge_slot_contact',
+        type: 'text input',
+        options: {
+          variableId: 'spa_selected_slot',
+          labels: { placeholder: 'Selected date and time' }
+        }
+      }
+    ]
+  },
+  {
+    id: 'spa_inline_contact',
+    title: 'Confirm Inline Booking',
+    graphCoordinates: { x: 3680, y: 40 },
+    blocks: [
+      text(
+        'spa_inline_contact_intro',
+        'Great — I’ll request that time. What name and email should I attach to the booking?'
+      ),
+      {
+        id: 'spa_inline_name_input',
+        type: 'text input',
+        options: {
+          variableId: variableIds.full_name,
+          labels: { placeholder: 'Full name' }
+        }
+      },
+      {
+        id: 'spa_inline_email_input',
+        type: 'email input',
+        options: {
+          variableId: variableIds.email,
+          labels: { placeholder: 'Email address' }
+        }
+      },
+      {
+        id: 'spa_create_booking_webhook',
+        type: 'Webhook',
+        options: {
+          isCustomBody: true,
+          isExecutedOnClient: false,
+          responseVariableMapping: [
+            {
+              id: 'spa_map_booking_result',
+              variableId: 'spa_booking_result',
+              bodyPath: 'data.message'
+            }
+          ],
+          webhook: {
+            method: 'POST',
+            url: createBookingWebhook,
+            headers: [
+              {
+                id: 'spa_create_booking_content_type',
+                key: 'Content-Type',
+                value: 'application/json'
+              }
+            ],
+            queryParams: [],
+            body: '{"booking_url":"{{booking_url}}","recommendation":"{{recommendation}}","duration_minutes":{{duration_minutes}},"selected_slot":"{{selected_slot}}","full_name":"{{full_name}}","email":"{{email}}","timezone":"America/Los_Angeles"}'
+          }
+        }
+      },
+      text('spa_inline_booking_result_text', '{{booking_result}}')
     ]
   },
   {
@@ -391,6 +542,21 @@ typebot.edges = [
     'edge_action_book',
     { blockId: 'spa_action_choice', itemId: 'spa_action_book' },
     'spa_booking'
+  ),
+  edge(
+    'edge_action_inline',
+    { blockId: 'spa_action_choice', itemId: 'spa_action_inline' },
+    'spa_inline_availability'
+  ),
+  edge(
+    'edge_availability_slot_prompt',
+    { blockId: 'spa_availability_text' },
+    'spa_inline_slot'
+  ),
+  edge(
+    'edge_slot_contact',
+    { blockId: 'spa_selected_slot_input' },
+    'spa_inline_contact'
   ),
   edge(
     'edge_action_change',
