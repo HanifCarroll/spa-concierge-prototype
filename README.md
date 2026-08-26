@@ -65,7 +65,9 @@ npm run check:catalog # Catalog pools, mappings, URLs, active state, and duratio
 
 The recommendation, duration, booking, staff-help, catalogue, and post-visit automation checks are documented in [DOGFOOD.md](DOGFOOD.md). Representative catalog coverage includes one booking-pool case for each of Massage & Bodywork, Facials, Body Treatments, Salt Cave, Restorative Rituals, and Consultation. Services in the same pool share one Cal event while retaining their own duration and built-in notes prefills.
 
-`scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. Set `SPA_FIND_AVAILABILITY_WEBHOOK` and `SPA_CREATE_BOOKING_WEBHOOK` to the exact existing Make webhook URLs when building; the script contains no API keys. The availability scenario returns Cal.com's date-keyed slot data. The booking scenario returns Cal.com's booking record, including its `uid`.
+`scripts/build-typebot-production.mjs` reproduces the production-shaped Typebot canvas from an exported bot payload. Set `SPA_FIND_AVAILABILITY_WEBHOOK`, `SPA_CREATE_BOOKING_WEBHOOK`, and `SPA_NORMALIZE_RECOMMENDATION_WEBHOOK` to the exact existing Make webhook URLs when building; the script contains no API keys.
+
+The published Typebot is intentionally thin: it asks questions, calls DeepSeek, displays the recommendation, and routes the visitor. It contains no JavaScript blocks. Make owns the technical transformations: duration matching, recommendation JSON normalization, and converting Cal.com availability into three display-ready Eastern Time slots. Airtable remains the staff-editable service source; Cal.com remains the booking authority.
 
 The Typebot public ID is widget configuration, not a secret. No API keys belong in this repository. Cal.com URLs are public booking destinations.
 

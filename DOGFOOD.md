@@ -53,6 +53,10 @@ post-booking intake and feedback. The operator should receive a useful summary.
 
 ## Preview API testing notes
 
+- Use Typebot's authenticated preview endpoint when testing the draft. It runs
+  DeepSeek and Make, but does not consume the published bot's Typebot usage.
+- The production Typebot should contain no Script blocks and no code-based Set
+  variable blocks. Make returns recommendation fields and display-ready slots.
 - The site uses Typebot's native `previewMessage` with `autoShowDelay`; it never
   auto-opens the chat window.
 - `onOpen` and `onPreviewMessageDismissed` set the

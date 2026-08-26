@@ -8,9 +8,15 @@ const typebot = payload.typebot;
 // Make webhook URLs are deployment inputs, not repository secrets.
 const findAvailabilityWebhook = process.env.SPA_FIND_AVAILABILITY_WEBHOOK;
 const createBookingWebhook = process.env.SPA_CREATE_BOOKING_WEBHOOK;
-if (!findAvailabilityWebhook || !createBookingWebhook) {
+const normalizeRecommendationWebhook =
+  process.env.SPA_NORMALIZE_RECOMMENDATION_WEBHOOK;
+if (
+  !findAvailabilityWebhook ||
+  !createBookingWebhook ||
+  !normalizeRecommendationWebhook
+) {
   throw new Error(
-    'Set SPA_FIND_AVAILABILITY_WEBHOOK and SPA_CREATE_BOOKING_WEBHOOK to the existing Make webhook URLs.'
+    'Set SPA_FIND_AVAILABILITY_WEBHOOK, SPA_CREATE_BOOKING_WEBHOOK, and SPA_NORMALIZE_RECOMMENDATION_WEBHOOK to the existing Make webhook URLs.'
   );
 }
 
@@ -18,13 +24,17 @@ const variableIds = Object.fromEntries(
   typebot.variables.map((variable) => [variable.name, variable.id])
 );
 
+const obsoleteVariableNames = new Set([
+  'duration_minutes',
+  'availability_start',
+  'availability_end',
+  'availability_data'
+]);
+
 const variables = [
-  ...typebot.variables,
-  {
-    id: 'spa_duration_minutes',
-    name: 'duration_minutes',
-    isSessionVariable: true
-  },
+  ...typebot.variables.filter(
+    (variable) => !obsoleteVariableNames.has(variable.name)
+  ),
   {
     id: 'spa_experience_preference',
     name: 'experience_preference',
@@ -43,21 +53,6 @@ const variables = [
   {
     id: 'spa_service_slug',
     name: 'service_slug',
-    isSessionVariable: true
-  },
-  {
-    id: 'spa_availability_start',
-    name: 'availability_start',
-    isSessionVariable: true
-  },
-  {
-    id: 'spa_availability_end',
-    name: 'availability_end',
-    isSessionVariable: true
-  },
-  {
-    id: 'spa_availability_data',
-    name: 'availability_data',
     isSessionVariable: true
   },
   ...[1, 2, 3].flatMap((number) => [
@@ -189,34 +184,15 @@ typebot.groups = [
         durationItems.map(([key, label]) => [
           `spa_duration_${key}`,
           label,
-          `edge_duration_${key}_normalize`
+          `edge_duration_${key}_experience`
         ])
       )
     ]
   },
   {
-    id: 'spa_normalize_duration',
-    title: 'Set Duration Filter',
-    graphCoordinates: { x: 1240, y: 80 },
-    blocks: [
-      {
-        id: 'spa_set_duration_minutes',
-        outgoingEdgeId: 'edge_normalize_experience',
-        type: 'Set variable',
-        options: {
-          variableId: 'spa_duration_minutes',
-          isExecutedOnClient: false,
-          isCode: true,
-          expressionToEvaluate:
-            'const durations = {"30 minutes":30,"45 minutes":45,"60 minutes":60,"75 minutes":75,"90 minutes":90,"Flexible / not sure":0}; return durations[{{duration}}] ?? 0;'
-        }
-      }
-    ]
-  },
-  {
     id: 'spa_experience',
     title: 'Choose Experience Preference',
-    graphCoordinates: { x: 1640, y: 80 },
+    graphCoordinates: { x: 1240, y: 80 },
     blocks: [
       text(
         'spa_experience_prompt',
@@ -236,7 +212,7 @@ typebot.groups = [
   {
     id: 'spa_recommend',
     title: 'Find & Recommend Approved Service',
-    graphCoordinates: { x: 2040, y: 80 },
+    graphCoordinates: { x: 1640, y: 80 },
     blocks: [
       {
         id: 'spa_load_eligible_services',
@@ -262,7 +238,7 @@ typebot.groups = [
               }
             ],
             queryParams: [],
-            body: '{"message":"{{visitor_request}}","duration_minutes":{{duration_minutes}},"environment":"{{treatment_goal}}","pressure":"{{experience_preference}}"}'
+            body: '{"message":"{{visitor_request}}","duration":"{{duration}}","environment":"{{treatment_goal}}","pressure":"{{experience_preference}}"}'
           }
         }
       },
@@ -325,7 +301,7 @@ typebot.groups = [
   {
     id: 'spa_actions',
     title: 'Choose Next Step',
-    graphCoordinates: { x: 2480, y: 80 },
+    graphCoordinates: { x: 2080, y: 80 },
     blocks: [
       choice('spa_action_choice', variableIds.next_step, [
         ['spa_action_book', 'Open full Cal calendar', 'edge_action_book'],
@@ -338,7 +314,7 @@ typebot.groups = [
   {
     id: 'spa_booking',
     title: 'Open Full Cal Calendar',
-    graphCoordinates: { x: 2880, y: -160 },
+    graphCoordinates: { x: 2480, y: -160 },
     blocks: [
       {
         id: 'spa_booking_redirect',
@@ -350,7 +326,7 @@ typebot.groups = [
   {
     id: 'spa_inline_prepare',
     title: 'Prepare Availability Request',
-    graphCoordinates: { x: 2880, y: 40 },
+    graphCoordinates: { x: 2480, y: 40 },
     blocks: [
       {
         id: 'spa_set_service_slug',
@@ -461,7 +437,7 @@ typebot.groups = [
   {
     id: 'spa_inline_slots',
     title: 'Choose a Cal.com Time',
-    graphCoordinates: { x: 3280, y: 40 },
+    graphCoordinates: { x: 2880, y: 40 },
     blocks: [
       text('spa_slot_prompt', 'These times are available in Eastern Time.'),
       choice('spa_slot_choice', 'spa_selected_slot_label', [
@@ -475,7 +451,7 @@ typebot.groups = [
   ...[1, 2, 3].map((number) => ({
     id: `spa_select_slot_${number}`,
     title: `Select Time ${number}`,
-    graphCoordinates: { x: 3680, y: -100 + number * 100 },
+    graphCoordinates: { x: 3280, y: -100 + number * 100 },
     blocks: [
       {
         id: `spa_copy_slot_${number}`,
@@ -493,7 +469,7 @@ typebot.groups = [
   {
     id: 'spa_inline_no_slots',
     title: 'No Inline Times',
-    graphCoordinates: { x: 3280, y: 320 },
+    graphCoordinates: { x: 2880, y: 320 },
     blocks: [
       text(
         'spa_no_slots_text',
@@ -512,7 +488,7 @@ typebot.groups = [
   {
     id: 'spa_inline_contact',
     title: 'Confirm Inline Booking',
-    graphCoordinates: { x: 4080, y: 40 },
+    graphCoordinates: { x: 3680, y: 40 },
     blocks: [
       text(
         'spa_inline_contact_intro',
@@ -571,7 +547,7 @@ typebot.groups = [
   {
     id: 'spa_contact',
     title: 'Capture Staff Help Request',
-    graphCoordinates: { x: 2880, y: 320 },
+    graphCoordinates: { x: 2480, y: 320 },
     blocks: [
       text('spa_contact_intro', 'Of course. Who should the spa team contact?'),
       {
@@ -631,6 +607,113 @@ typebot.groups = [
   }
 ];
 
+const recommendationGroup = typebot.groups.find(
+  (group) => group.id === 'spa_recommend'
+);
+recommendationGroup.blocks = [
+  recommendationGroup.blocks.find(
+    (block) => block.id === 'spa_load_eligible_services'
+  ),
+  recommendationGroup.blocks.find(
+    (block) => block.id === 'spa_recommendation_ai'
+  ),
+  {
+    id: 'spa_normalize_recommendation_webhook',
+    type: 'Webhook',
+    options: {
+      responseVariableMapping: [
+        {
+          id: 'spa_map_recommendation',
+          variableId: variableIds.recommendation,
+          bodyPath: 'data.recommendation'
+        },
+        {
+          id: 'spa_map_booking_url',
+          variableId: variableIds.booking_url,
+          bodyPath: 'data.booking_url'
+        }
+      ],
+      isExecutedOnClient: false,
+      webhook: {
+        method: 'POST',
+        url: normalizeRecommendationWebhook,
+        headers: [],
+        queryParams: [
+          {
+            id: 'spa_recommendation_json_query',
+            key: 'recommendation_json',
+            value: '{{recommendation_json}}'
+          }
+        ]
+      }
+    }
+  },
+  recommendationGroup.blocks.find(
+    (block) => block.id === 'spa_recommendation_text'
+  )
+];
+
+const availabilityGroup = typebot.groups.find(
+  (group) => group.id === 'spa_inline_prepare'
+);
+availabilityGroup.blocks = [
+  {
+    id: 'spa_find_availability_webhook',
+    type: 'Webhook',
+    options: {
+      isCustomBody: true,
+      isExecutedOnClient: false,
+      responseVariableMapping: [
+        {
+          id: 'spa_map_service_slug',
+          variableId: 'spa_service_slug',
+          bodyPath: 'data.service_slug'
+        },
+        ...[1, 2, 3].flatMap((number) => [
+          {
+            id: `spa_map_slot_${number}_start`,
+            variableId: `spa_slot_${number}_start`,
+            bodyPath: `data.slot_${number}_start`
+          },
+          {
+            id: `spa_map_slot_${number}_label`,
+            variableId: `spa_slot_${number}_label`,
+            bodyPath: `data.slot_${number}_label`
+          }
+        ])
+      ],
+      webhook: {
+        method: 'POST',
+        url: findAvailabilityWebhook,
+        headers: [
+          {
+            id: 'spa_availability_content_type',
+            key: 'Content-Type',
+            value: 'application/json'
+          }
+        ],
+        queryParams: [],
+        body: '{"booking_url":"{{booking_url}}"}'
+      }
+    }
+  },
+  availabilityGroup.blocks.find(
+    (block) => block.id === 'spa_slots_available_condition'
+  )
+];
+
+for (const number of [1, 2, 3]) {
+  const selectGroup = typebot.groups.find(
+    (group) => group.id === `spa_select_slot_${number}`
+  );
+  selectGroup.blocks[0].options = {
+    variableId: 'spa_selected_slot',
+    isExecutedOnClient: false,
+    isCode: false,
+    expressionToEvaluate: `{{slot_${number}_start}}`
+  };
+}
+
 typebot.edges = [
   edge('edge_start_welcome', { eventId: 'spa_start' }, 'spa_welcome'),
   edge('edge_request_goal', { blockId: 'spa_request_input' }, 'spa_goal'),
@@ -643,15 +726,10 @@ typebot.edges = [
   ),
   ...durationItems.map(([key]) =>
     edge(
-      `edge_duration_${key}_normalize`,
+      `edge_duration_${key}_experience`,
       { blockId: 'spa_duration_choice', itemId: `spa_duration_${key}` },
-      'spa_normalize_duration'
+      'spa_experience'
     )
-  ),
-  edge(
-    'edge_normalize_experience',
-    { blockId: 'spa_set_duration_minutes' },
-    'spa_experience'
   ),
   ...experienceItems.map(([key]) =>
     edge(
