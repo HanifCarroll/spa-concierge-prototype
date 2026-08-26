@@ -40,12 +40,12 @@
     ],
     [
       'Service Catalog',
-      'Service details, durations, active status, recommendation rules, and booking groups.',
+      'Services, visit length, availability, matching guidance, and booking category.',
       'When the menu changes'
     ],
     [
       'Needs Attention',
-      'Missing intake, staff-help requests, low feedback, and unresolved exceptions.',
+      'Missing intake, staff-help requests, low feedback, and other items waiting for staff.',
       'As issues appear'
     ],
     [
@@ -58,19 +58,15 @@
   const automaticActions = [
     [
       'Recommendation',
-      'Matches the guest’s answers to the approved catalog.',
-      'Typebot + service rules'
+      'Matches the guest’s answers to the approved service list.',
+      'Typebot + spa guidance'
     ],
     [
       'Booking confirmation',
       'Confirms the time and captures booking contact details.',
       'Cal.com'
     ],
-    [
-      'Visit record',
-      'Creates the operational record for staff.',
-      'Make + Airtable'
-    ],
+    ['Visit record', 'Creates the visit record for staff.', 'Make + Airtable'],
     ['Intake request', 'Sends the post-booking intake form.', 'Make + Tally'],
     [
       'Aftercare',
@@ -79,7 +75,7 @@
     ],
     [
       'Feedback',
-      'Requests feedback and flags responses that need attention.',
+      'Requests feedback and marks responses that need attention.',
       'Tally + Make'
     ]
   ];
@@ -105,21 +101,17 @@
 
 <header class="document-bar">
   <a class="wordmark" href="/">Tranquility<span aria-hidden="true">.</span></a>
-  <p>System overview</p>
-  <a class="return-link" href="/"
-    >Return to spa website <span aria-hidden="true">↗</span></a
-  >
+  <a class="return-link" href="/">Return to spa website</a>
 </header>
 
 <main class="report" id="top">
   <section class="cover" aria-labelledby="report-title">
     <div class="cover-copy">
-      <p class="kicker">Portfolio case study · Working prototype</p>
-      <h1 id="report-title">A connected spa concierge system</h1>
+      <h1 id="report-title">How the spa concierge works</h1>
       <p class="summary">
-        This prototype helps a guest choose an appropriate service, book it,
-        complete intake, arrive with staff prepared, and receive follow-up
-        afterward.
+        A guest can get help choosing a service, book a time, complete intake,
+        and receive follow-up after the visit. Staff can see what they need at
+        each step.
       </p>
       <dl class="document-meta">
         <div>
@@ -128,31 +120,26 @@
         </div>
         <div>
           <dt>Purpose</dt>
-          <dd>Reduce service confusion and manual follow-up</dd>
+          <dd>Help guests choose and reduce follow-up work</dd>
         </div>
         <div>
-          <dt>Prototype scope</dt>
+          <dt>Included here</dt>
           <dd>20 services across 6 booking groups</dd>
         </div>
         <div>
           <dt>Operating model</dt>
-          <dd>Business-managed, no-code tools</dd>
+          <dd>Managed through familiar business tools</dd>
         </div>
       </dl>
     </div>
     <figure class="cover-figure">
       <img src="/images/treatment-room.png" alt="A calm spa treatment room" />
-      <figcaption>
-        The customer-facing experience demonstrated by the system.
-      </figcaption>
+      <figcaption>The spa website is the starting point for guests.</figcaption>
     </figure>
   </section>
 
   <section class="report-section" aria-labelledby="summary-title">
-    <div class="section-label">
-      <span>Executive summary</span><span>Page 01</span>
-    </div>
-    <h2 id="summary-title">What the system changes</h2>
+    <h2 id="summary-title">Overview</h2>
     <div class="summary-table">
       <div>
         <strong>Before</strong>
@@ -171,55 +158,52 @@
       <div>
         <strong>For staff</strong>
         <p>
-          Booking, intake, visit context, aftercare, and feedback are organized
-          around one visit record.
+          Booking, intake, visit notes, aftercare, and feedback are kept with
+          the same visit.
         </p>
       </div>
       <div>
         <strong>For the owner</strong>
         <p>
-          The service catalog and operating views can be maintained without
-          editing automation logic.
+          The owner can update services and review activity from simple staff
+          views.
         </p>
       </div>
     </div>
     <aside class="key-point">
       <strong>Core idea</strong>
       <p>
-        The system does not replace the spa’s expertise. It turns that expertise
-        into a consistent journey guests and staff can follow.
+        Spa staff define the services and matching rules. The concierge uses
+        those rules the same way for every guest.
       </p>
     </aside>
   </section>
 
   <nav class="contents report-section" aria-label="Report contents">
-    <div class="section-label">
-      <span>Contents</span><span>Sections 01–07</span>
-    </div>
+    <h2>Contents</h2>
     <ol>
       <li><a href="#journey"><span>01</span>Guest journey</a></li>
       <li><a href="#map"><span>02</span>System map</a></li>
       <li><a href="#screens"><span>03</span>Guest and staff experience</a></li>
-      <li><a href="#staff"><span>04</span>Staff operating views</a></li>
+      <li><a href="#staff"><span>04</span>Staff views</a></li>
       <li>
-        <a href="#automatic"><span>05</span>What happens automatically</a>
+        <a href="#automatic"><span>05</span>Messages and records</a>
       </li>
       <li>
-        <a href="#maintenance"><span>06</span>How the business maintains it</a>
+        <a href="#maintenance"><span>06</span>What the spa team can update</a>
       </li>
-      <li><a href="#production"><span>07</span>Prototype and production</a></li>
+      <li>
+        <a href="#production"><span>07</span>Demonstration and live setup</a>
+      </li>
     </ol>
   </nav>
 
   <section class="report-section" id="journey" aria-labelledby="journey-title">
-    <div class="section-label">
-      <span>Section 01</span><span>Guest journey</span>
-    </div>
     <div class="section-intro">
-      <h2 id="journey-title">One path from uncertainty to follow-up</h2>
+      <h2 id="journey-title">1. The guest journey</h2>
       <p>
-        The guest sees a simple sequence. Each step produces the information
-        needed for the next one.
+        A guest moves through six clear steps, from asking for help to receiving
+        follow-up after the visit.
       </p>
     </div>
     <ol class="journey-list">
@@ -236,31 +220,26 @@
   </section>
 
   <section class="report-section" id="map" aria-labelledby="map-title">
-    <div class="section-label">
-      <span>Section 02</span><span>System map</span>
-    </div>
     <div class="section-intro">
-      <h2 id="map-title">How the parts connect</h2>
+      <h2 id="map-title">2. How the system works</h2>
       <p>
-        Guests use familiar customer-facing screens. Staff work in Airtable.
-        Make moves information between the services.
+        Each service has one job. Guests use the website, concierge, booking,
+        and forms. Staff use Airtable and email.
       </p>
     </div>
     <figure class="system-map">
       <div class="map-column">
-        <p class="map-heading">Guest-facing</p>
+        <p class="map-heading">Guest tools</p>
         <div class="map-node">
           <strong>Spa website</strong><span
             >Explains the offer and opens the concierge</span
           >
         </div>
-        <span class="arrow">↓</span>
         <div class="map-node">
           <strong>Typebot concierge</strong><span
             >Collects the need and recommends an approved service</span
           >
         </div>
-        <span class="arrow">↓</span>
         <div class="map-pair">
           <div class="map-node">
             <strong>Cal.com</strong><span>Booking</span>
@@ -271,18 +250,15 @@
         </div>
       </div>
       <div class="map-bridge">
-        <span>→</span><strong>Make</strong><small
-          >Moves and formats information</small
-        ><span>→</span>
+        <strong>Make</strong><small>Shares information between the tools</small>
       </div>
       <div class="map-column">
-        <p class="map-heading">Staff-facing</p>
+        <p class="map-heading">Staff tools</p>
         <div class="map-node">
           <strong>Airtable</strong><span
             >Service catalog, visit records, queues, and dashboard</span
           >
         </div>
-        <span class="arrow">↓</span>
         <div class="map-node">
           <strong>Email</strong><span
             >Confirmations, intake, aftercare, feedback, and alerts</span
@@ -290,27 +266,24 @@
         </div>
       </div>
       <figcaption>
-        Each tool has one clear job. The business does not need to manage a
-        custom application server.
+        The spa owns each account and can update its services without changing
+        the website.
       </figcaption>
     </figure>
   </section>
 
   <section class="report-section" id="screens" aria-labelledby="screens-title">
-    <div class="section-label">
-      <span>Section 03</span><span>Interface examples</span>
-    </div>
     <div class="section-intro">
-      <h2 id="screens-title">What guests and staff actually see</h2>
+      <h2 id="screens-title">3. What guests and staff see</h2>
       <p>
-        The automation stays out of sight. Both sides use focused interfaces
-        built around their immediate task.
+        Guests have a short conversation. Staff have a daily view of visits and
+        anything that needs attention.
       </p>
     </div>
     <div class="screen-grid">
       <figure>
         <div class="figure-heading">
-          <span>Figure A</span><strong>Concierge conversation</strong>
+          <strong>Concierge conversation</strong>
         </div>
         <div class="phone" aria-label="Example concierge conversation">
           <div class="phone-top"><span>9:41</span><span>● ● ●</span></div>
@@ -325,19 +298,19 @@
               time and focus on muscle tension.
             </p>
             <button type="button" onclick={openConcierge}
-              >Continue to booking →</button
+              >Continue to booking</button
             >
           </div>
         </div>
         <figcaption>
-          The concierge asks only what it needs, returns one clear option, and
-          hands booking to the calendar.
+          The concierge asks a few questions, recommends one service, and opens
+          the booking calendar.
         </figcaption>
       </figure>
 
       <figure>
         <div class="figure-heading">
-          <span>Figure B</span><strong>Daily operations view</strong>
+          <strong>Daily operations view</strong>
         </div>
         <div class="staff-ui" aria-label="Example staff operations dashboard">
           <aside>
@@ -357,7 +330,7 @@
             <div class="staff-panels">
               <section class="queue">
                 <div class="panel-title">
-                  <strong>Visit Queue</strong><small>View all →</small>
+                  <strong>Visit Queue</strong><small>View all</small>
                 </div>
                 <div>
                   <time>9:00</time><span
@@ -387,22 +360,19 @@
           </div>
         </div>
         <figcaption>
-          The daily view emphasizes upcoming visits and exceptions rather than
-          the underlying workflows.
+          Staff can see upcoming visits, intake status, aftercare tasks, and
+          feedback that needs a response.
         </figcaption>
       </figure>
     </div>
   </section>
 
   <section class="report-section" id="staff" aria-labelledby="staff-title">
-    <div class="section-label">
-      <span>Section 04</span><span>Staff operating views</span>
-    </div>
     <div class="section-intro">
-      <h2 id="staff-title">Four views cover routine operations</h2>
+      <h2 id="staff-title">4. Staff views</h2>
       <p>
-        Staff do not work inside the automation. They use business screens that
-        answer practical questions.
+        Four Airtable views give the team the information needed for daily work
+        and regular review.
       </p>
     </div>
     <div class="data-table" role="table" aria-label="Staff operating views">
@@ -420,14 +390,11 @@
     id="automatic"
     aria-labelledby="automatic-title"
   >
-    <div class="section-label">
-      <span>Section 05</span><span>Automation</span>
-    </div>
     <div class="section-intro">
-      <h2 id="automatic-title">What happens without staff chasing it</h2>
+      <h2 id="automatic-title">5. What the system sends and records</h2>
       <p>
-        Automation handles predictable handoffs. People remain responsible for
-        spa expertise, the visit itself, and unusual situations.
+        The system handles routine messages and record updates. Staff provide
+        the service, write visit notes, and handle special requests.
       </p>
     </div>
     <div class="data-table" role="table" aria-label="Automated actions">
@@ -450,22 +417,17 @@
     id="maintenance"
     aria-labelledby="maintenance-title"
   >
-    <div class="section-label">
-      <span>Section 06</span><span>Ownership and maintenance</span>
-    </div>
     <div class="section-intro">
-      <h2 id="maintenance-title">
-        The business maintains the knowledge, not the plumbing
-      </h2>
+      <h2 id="maintenance-title">6. What the spa team can update</h2>
       <p>
-        The service catalog is the source of truth. Routine updates happen there
-        once and feed the rest of the journey.
+        Staff update the service catalog in Airtable. Those changes are then
+        used by the concierge and staff views.
       </p>
     </div>
     <div class="responsibility-grid">
       <article>
-        <p class="responsibility-label">Spa team</p>
-        <h3>Owns business information</h3>
+        <h3>Spa team</h3>
+        <p>Updates spa information</p>
         <ul>
           <li>Service details and availability</li>
           <li>Recommendation guidance</li>
@@ -473,8 +435,8 @@
         </ul>
       </article>
       <article>
-        <p class="responsibility-label">System</p>
-        <h3>Handles repeatable handoffs</h3>
+        <h3>System</h3>
+        <p>Sends messages and updates records</p>
         <ul>
           <li>Move records between tools</li>
           <li>Send scheduled messages</li>
@@ -482,11 +444,11 @@
         </ul>
       </article>
       <article>
-        <p class="responsibility-label">Implementation partner</p>
-        <h3>Supports structural changes</h3>
+        <h3>Implementation partner</h3>
+        <p>Changes how the system works</p>
         <ul>
-          <li>New integrations or rules</li>
-          <li>Permissions and monitoring</li>
+          <li>New services, connections, or rules</li>
+          <li>Staff access and error alerts</li>
           <li>Major journey changes</li>
         </ul>
       </article>
@@ -498,26 +460,21 @@
     id="production"
     aria-labelledby="production-title"
   >
-    <div class="section-label">
-      <span>Section 07</span><span>Prototype and production</span>
-    </div>
     <div class="section-intro">
-      <h2 id="production-title">
-        What is demonstrated and what changes for a real spa
-      </h2>
+      <h2 id="production-title">7. From demonstration to real use</h2>
       <p>
-        The prototype proves the journey. Production uses the client’s data,
-        accounts, policies, and operating procedures.
+        This version shows the full process with sample services and accounts. A
+        real spa would use its own information, policies, and accounts.
       </p>
     </div>
     <div
       class="comparison"
       role="table"
-      aria-label="Prototype and production comparison"
+      aria-label="Demonstration and real spa comparison"
     >
       <div class="comparison-row comparison-head">
         <span>Area</span><span>This demonstration</span><span
-          >Production implementation</span
+          >For a real spa</span
         >
       </div>
       <div class="comparison-row">
@@ -525,8 +482,10 @@
         ><span>The spa’s complete approved menu and rules</span>
       </div>
       <div class="comparison-row">
-        <strong>Accounts</strong><span>Prototype accounts and sample data</span
-        ><span>Client-owned accounts, roles, and retention policies</span>
+        <strong>Accounts</strong><span>Sample accounts and data</span><span
+          >Client-owned accounts, staff access, and rules for how long records
+          are kept</span
+        >
       </div>
       <div class="comparison-row">
         <strong>Booking</strong><span>Six shared Cal.com booking groups</span
@@ -535,14 +494,13 @@
         >
       </div>
       <div class="comparison-row">
-        <strong>Communication</strong><span>Demonstration email paths</span
-        ><span
-          >The spa’s domain, consent, templates, and escalation process</span
+        <strong>Communication</strong><span>Sample emails and alerts</span><span
+          >The spa’s domain, consent, templates, and staff follow-up process</span
         >
       </div>
       <div class="comparison-row">
         <strong>Operations</strong><span>Representative staff views</span><span
-          >Named owners, permissions, monitoring, and support</span
+          >Staff access, error alerts, and a support plan</span
         >
       </div>
     </div>
@@ -550,15 +508,12 @@
 
   <section class="demo-actions" aria-labelledby="demo-title">
     <div>
-      <p class="kicker">Explore the working prototype</p>
-      <h2 id="demo-title">See the journey in context</h2>
+      <h2 id="demo-title">Try the demonstration</h2>
     </div>
     <div>
-      <button type="button" onclick={openConcierge}
-        >Try the concierge <span>→</span></button
-      ><a href="/">View the spa website <span>↗</span></a><a href="#top"
-        >Back to top <span>↑</span></a
-      >
+      <button type="button" onclick={openConcierge}>Try the concierge</button><a
+        href="/">View the spa website</a
+      ><a href="#top">Back to top</a>
     </div>
   </section>
 </main>
@@ -607,20 +562,12 @@
   .document-bar {
     align-items: center;
     background: var(--paper);
-    border-bottom: 1px solid var(--line);
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-columns: 1fr 1fr;
     padding: 0.9rem max(1.25rem, calc((100vw - 1120px) / 2));
     position: sticky;
     top: 0;
     z-index: 10;
-  }
-  .document-bar p {
-    color: var(--muted);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    margin: 0;
-    text-transform: uppercase;
   }
   .wordmark {
     font-family: 'Iowan Old Style', Baskerville, serif;
@@ -628,10 +575,7 @@
     letter-spacing: -0.06em;
     text-decoration: none;
   }
-  .wordmark span,
-  .kicker,
-  .section-label,
-  .responsibility-label {
+  .wordmark span {
     color: var(--accent);
   }
   .return-link {
@@ -646,22 +590,14 @@
     max-width: 1120px;
   }
   .cover {
-    border-bottom: 1px solid var(--line);
     display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    min-height: 42rem;
+    grid-template-columns: 1.2fr 0.8fr;
+    min-height: 31rem;
   }
   .cover-copy {
     align-content: center;
     display: grid;
-    padding: clamp(3rem, 7vw, 6rem);
-  }
-  .kicker,
-  .section-label,
-  .responsibility-label {
-    font-size: 0.66rem;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
+    padding: clamp(2.75rem, 5vw, 4.5rem);
   }
   h1,
   h2,
@@ -679,10 +615,10 @@
     letter-spacing: -0.035em;
   }
   h1 {
-    font-size: clamp(3.2rem, 5.5vw, 5.8rem);
-    line-height: 0.95;
-    margin-bottom: 2rem;
-    max-width: 9ch;
+    font-size: clamp(3rem, 4.6vw, 4.8rem);
+    line-height: 0.98;
+    margin-bottom: 1.5rem;
+    max-width: 12ch;
   }
   h2 {
     font-size: clamp(2.2rem, 3.5vw, 3.6rem);
@@ -698,30 +634,23 @@
   }
   .summary {
     color: var(--muted);
-    font-size: 1.1rem;
+    font-size: 1rem;
     max-width: 34rem;
   }
   .document-meta {
-    border-top: 1px solid var(--line);
     display: grid;
+    gap: 0.65rem 1.5rem;
     grid-template-columns: 1fr 1fr;
-    margin: 2rem 0 0;
+    margin: 1.5rem 0 0;
   }
   .document-meta div {
-    border-bottom: 1px solid var(--line);
-    padding: 1rem 1rem 1rem 0;
-  }
-  .document-meta div:nth-child(odd) {
-    border-right: 1px solid var(--line);
-  }
-  .document-meta div:nth-child(even) {
-    padding-left: 1rem;
+    background: #f4f1ec;
+    padding: 0.8rem;
   }
   .document-meta dt {
-    color: var(--accent);
-    font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    color: var(--muted);
+    font-size: 0.7rem;
+    font-weight: 600;
   }
   .document-meta dd {
     font-size: 0.8rem;
@@ -731,12 +660,13 @@
   .cover-figure {
     background: #ddd4c9;
     margin: 0;
-    min-height: 34rem;
+    min-height: 31rem;
     position: relative;
   }
   .cover-figure img {
     height: 100%;
     object-fit: cover;
+    object-position: 58% center;
     width: 100%;
   }
   .cover-figure figcaption {
@@ -750,15 +680,10 @@
     position: absolute;
   }
   .report-section {
-    border-bottom: 1px solid var(--line);
     padding: clamp(3rem, 6vw, 5.5rem);
   }
-  .section-label {
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 3rem;
-    padding-bottom: 0.7rem;
+  .report-section:nth-of-type(even) {
+    background: #fbf9f6;
   }
   .section-intro {
     display: grid;
@@ -772,24 +697,20 @@
     max-width: 30rem;
   }
   .summary-table {
-    border-left: 1px solid var(--line);
-    border-top: 1px solid var(--line);
     display: grid;
+    gap: 1rem;
     grid-template-columns: 1fr 1fr;
     margin-top: 2rem;
   }
   .summary-table div {
-    border-bottom: 1px solid var(--line);
-    border-right: 1px solid var(--line);
+    background: #f2eee8;
     padding: 1.5rem;
   }
   .summary-table strong {
     color: var(--accent);
     display: block;
     font-size: 0.68rem;
-    letter-spacing: 0.1em;
     margin-bottom: 0.6rem;
-    text-transform: uppercase;
   }
   .summary-table p {
     font-size: 0.88rem;
@@ -797,7 +718,6 @@
   }
   .key-point {
     background: #f2eee8;
-    border-left: 4px solid var(--accent);
     display: grid;
     gap: 1rem;
     grid-template-columns: 8rem 1fr;
@@ -807,30 +727,27 @@
   .key-point strong {
     color: var(--accent);
     font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
   }
   .key-point p {
     margin: 0;
   }
   .contents ol,
   .journey-list {
-    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: 1fr 1fr;
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .contents li,
-  .journey-list li {
-    border-bottom: 1px solid var(--line);
-  }
   .contents a {
+    background: #f2eee8;
     display: grid;
     font-family: 'Iowan Old Style', Baskerville, serif;
     font-size: 1.4rem;
     gap: 1rem;
     grid-template-columns: 3rem 1fr;
-    padding: 1rem 0;
+    padding: 1rem;
     text-decoration: none;
   }
   .contents a span,
@@ -843,10 +760,11 @@
     padding-top: 0.35rem;
   }
   .journey-list li {
+    background: #f2eee8;
     display: grid;
     gap: 2rem;
     grid-template-columns: 4rem 1fr;
-    padding: 1.4rem 0;
+    padding: 1.4rem;
   }
   .journey-list > li > span {
     font-family: 'Iowan Old Style', Baskerville, serif;
@@ -862,7 +780,7 @@
     max-width: 43rem;
   }
   .system-map {
-    border: 1px solid var(--line);
+    background: #f2eee8;
     display: grid;
     gap: 1.5rem;
     grid-template-columns: 1fr 9rem 1fr;
@@ -874,16 +792,14 @@
     gap: 0.7rem;
   }
   .map-heading {
-    color: var(--accent);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 600;
     margin: 0;
     text-align: center;
-    text-transform: uppercase;
   }
   .map-node {
-    background: #f5f2ed;
-    border: 1px solid var(--line);
+    background: var(--paper);
     display: grid;
     gap: 0.35rem;
     padding: 1rem;
@@ -905,19 +821,13 @@
     gap: 0.7rem;
     grid-template-columns: 1fr 1fr;
   }
-  .arrow {
-    color: var(--accent);
-    text-align: center;
-  }
   .map-bridge {
     align-self: center;
+    background: #e5d9ce;
     display: grid;
     justify-items: center;
+    padding: 1.25rem 0.8rem;
     text-align: center;
-  }
-  .map-bridge > span {
-    color: var(--accent);
-    font-size: 1.8rem;
   }
   .map-bridge strong {
     font-family: 'Iowan Old Style', Baskerville, serif;
@@ -926,7 +836,6 @@
   }
   .system-map figcaption,
   .screen-grid figcaption {
-    border-top: 1px solid var(--line);
     color: var(--muted);
     font-size: 0.7rem;
     line-height: 1.45;
@@ -941,20 +850,15 @@
     grid-template-columns: 0.75fr 1.25fr;
   }
   .screen-grid figure {
-    border: 1px solid var(--line);
+    background: #f2eee8;
     margin: 0;
     padding: 1rem;
   }
   .figure-heading {
-    border-bottom: 1px solid var(--line);
     display: flex;
-    font-size: 0.7rem;
+    font-size: 0.9rem;
     justify-content: space-between;
     padding-bottom: 0.7rem;
-  }
-  .figure-heading span {
-    color: var(--accent);
-    text-transform: uppercase;
   }
   .screen-grid figcaption {
     margin-top: 1rem;
@@ -975,7 +879,7 @@
     padding: 1rem 1.1rem 0.6rem;
   }
   .chat-title {
-    border-bottom: 1px solid var(--line);
+    background: #f2eee8;
     font-family: 'Iowan Old Style', Baskerville, serif;
     font-size: 0.95rem;
     padding: 0.7rem;
@@ -1054,8 +958,8 @@
     margin: 0.3rem 0 1rem;
   }
   .staff-heading > span {
-    border: 1px solid var(--line);
     border-radius: 2rem;
+    background: #f5f2ed;
     font-size: 0.56rem;
     padding: 0.4rem 0.6rem;
   }
@@ -1079,7 +983,6 @@
   }
   .queue > div:not(.panel-title) {
     align-items: center;
-    border-top: 1px solid #ded7d0;
     display: grid;
     font-size: 0.52rem;
     gap: 0.4rem;
@@ -1105,21 +1008,21 @@
     background: #dde8da;
   }
   .attention p {
-    border-top: 1px solid #ded7d0;
+    background: #f7f4f0;
     font-family: 'Avenir Next', Avenir, sans-serif;
     font-size: 0.54rem;
     gap: 0.2rem;
     margin: 0;
-    padding: 0.65rem 0;
+    padding: 0.65rem;
   }
   .data-table,
   .comparison {
-    border-left: 1px solid var(--line);
-    border-top: 1px solid var(--line);
+    display: grid;
+    gap: 0.5rem;
   }
   .table-row,
   .comparison-row {
-    border-bottom: 1px solid var(--line);
+    background: #f4f1ec;
     display: grid;
     grid-template-columns: 0.8fr 1.5fr 0.8fr;
   }
@@ -1128,7 +1031,6 @@
   }
   .table-row > *,
   .comparison-row > * {
-    border-right: 1px solid var(--line);
     font-size: 0.8rem;
     line-height: 1.45;
     padding: 1rem;
@@ -1141,29 +1043,30 @@
   }
   .table-head,
   .comparison-head {
-    background: #f2eee8;
+    background: #e7ded6;
   }
   .table-head > *,
   .comparison-head > * {
     color: var(--accent);
     font-size: 0.62rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
   }
   .responsibility-grid {
     display: grid;
+    gap: 1rem;
     grid-template-columns: repeat(3, 1fr);
   }
   .responsibility-grid article {
-    border: 1px solid var(--line);
-    margin-right: -1px;
+    background: #f2eee8;
     padding: 1.5rem;
   }
   .responsibility-grid h3 {
-    min-height: 2.4em;
+    margin-bottom: 0.35rem;
+  }
+  .responsibility-grid article > p {
+    color: var(--muted);
+    font-size: 0.82rem;
   }
   .responsibility-grid ul {
-    border-top: 1px solid var(--line);
     list-style: none;
     margin: 1.5rem 0 0;
     padding: 1rem 0 0;
@@ -1194,18 +1097,18 @@
     margin: 0;
   }
   .demo-actions > div:last-child {
-    display: grid;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
   }
   .demo-actions button,
   .demo-actions a {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1);
     border: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.35);
     color: #fff;
     cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem 0;
+    display: inline-block;
+    padding: 0.85rem 1rem;
     text-align: left;
     text-decoration: none;
   }
@@ -1222,9 +1125,6 @@
     .document-bar {
       grid-template-columns: 1fr auto;
     }
-    .document-bar p {
-      display: none;
-    }
     .report {
       margin: 0;
     }
@@ -1238,11 +1138,11 @@
       min-height: 0;
     }
     .cover-figure {
-      min-height: 22rem;
+      min-height: 15rem;
       order: -1;
     }
     .cover-copy {
-      padding: 3rem 1.5rem;
+      padding: 2.5rem 1.5rem;
     }
     .report-section,
     .demo-actions {
@@ -1255,13 +1155,7 @@
       grid-template-columns: 1fr;
     }
     .map-bridge {
-      grid-template-columns: 1fr auto 1fr;
-    }
-    .map-bridge > span {
-      transform: rotate(90deg);
-    }
-    .map-bridge small {
-      display: none;
+      padding: 1rem;
     }
     .system-map figcaption {
       grid-column: auto;
@@ -1270,7 +1164,7 @@
       grid-template-columns: 1fr;
     }
     .responsibility-grid article {
-      margin: 0 0 -1px;
+      margin: 0;
     }
     .document-footer {
       padding: 1rem 1.5rem;
@@ -1280,15 +1174,12 @@
     .return-link {
       font-size: 0.68rem;
     }
-    .document-meta,
     .summary-table {
       grid-template-columns: 1fr;
     }
-    .document-meta div:nth-child(odd) {
-      border-right: 0;
-    }
-    .document-meta div:nth-child(even) {
-      padding-left: 0;
+    .contents ol,
+    .journey-list {
+      grid-template-columns: 1fr;
     }
     .key-point {
       grid-template-columns: 1fr;
