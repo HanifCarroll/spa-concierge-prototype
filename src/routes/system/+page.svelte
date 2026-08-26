@@ -35,22 +35,32 @@
   const staffViews = [
     [
       'Visit Queue',
-      'Today’s appointments, service, status, and intake completion.',
+      'Upcoming visits with guest details, intake responses, staff notes, aftercare, and the action to complete a visit.',
       'Daily'
     ],
     [
+      'Pending Intake',
+      'Booked guests who have not submitted their intake form.',
+      'Before each visit'
+    ],
+    [
       'Service Catalog',
-      'Service name, visit length, active status, guest goals it matches, and booking category.',
+      'Active services with their length, booking group, matching criteria, and editable details.',
       'When the menu changes'
     ],
     [
-      'Needs Attention',
-      'Guests with missing intake, staff-help requests, low feedback, or follow-up still due.',
-      'As issues appear'
+      'Add Service',
+      'A short form for adding the required details for a new service. New services remain inactive until reviewed.',
+      'When adding a service'
+    ],
+    [
+      'Retired Services',
+      'Inactive services that staff can review or return to the active catalog.',
+      'When the menu changes'
     ],
     [
       'Operations Dashboard',
-      'Booking volume, completion, feedback, and service demand.',
+      'Booking, intake, completed visit, service demand, and feedback summaries.',
       'Weekly or monthly'
     ]
   ];
@@ -192,9 +202,6 @@
       <li>
         <a href="#maintenance"><span>06</span>What the spa team can update</a>
       </li>
-      <li>
-        <a href="#production"><span>07</span>Demonstration and live setup</a>
-      </li>
     </ol>
   </nav>
 
@@ -319,9 +326,9 @@
         <div class="staff-ui" aria-label="Example staff operations dashboard">
           <aside>
             <strong>Tranquility</strong><span class="active">Visit Queue</span
-            ><span>Service Catalog</span><span>Needs Attention</span><span
-              >Dashboard</span
-            >
+            ><span>Pending Intake</span><span>Service Catalog</span><span
+              >Add Service</span
+            ><span>Retired Services</span><span>Operations Dashboard</span>
           </aside>
           <div class="staff-main">
             <div class="staff-heading">
@@ -354,18 +361,17 @@
               </section>
               <section class="attention">
                 <div class="panel-title">
-                  <strong>Needs Attention</strong><small>3 items</small>
+                  <strong>Pending Intake</strong><small>2 guests</small>
                 </div>
-                <p><b>Intake incomplete</b><small>2 guests</small></p>
-                <p><b>Aftercare due</b><small>1 visit</small></p>
-                <p><b>Low feedback</b><small>1 response</small></p>
+                <p><b>Olivia M.</b><small>Visit today at 9:00</small></p>
+                <p><b>Marcus T.</b><small>Visit tomorrow at 11:30</small></p>
               </section>
             </div>
           </div>
         </div>
         <figcaption>
-          Staff can see upcoming visits, intake status, aftercare tasks, and
-          feedback that needs a response.
+          Staff can open an upcoming visit, review intake, add notes and
+          aftercare, and mark the visit complete.
         </figcaption>
       </figure>
     </div>
@@ -375,9 +381,8 @@
     <div class="section-intro">
       <h2 id="staff-title">4. Staff views</h2>
       <p>
-        The visit queue shows today’s appointments. The catalog holds service
-        details. Needs Attention lists unfinished tasks. The dashboard shows
-        booking and feedback trends.
+        Airtable gives staff a page for each common task: preparing for visits,
+        checking missing intake, maintaining services, and reviewing activity.
       </p>
     </div>
     <div class="data-table" role="table" aria-label="Staff operating views">
@@ -462,59 +467,6 @@
     </div>
   </section>
 
-  <section
-    class="report-section"
-    id="production"
-    aria-labelledby="production-title"
-  >
-    <div class="section-intro">
-      <h2 id="production-title">7. From demonstration to real use</h2>
-      <p>
-        This version uses sample services, test accounts, and demonstration
-        emails. A real spa would use its own menu, booking calendar, email
-        domain, staff access, and follow-up rules.
-      </p>
-    </div>
-    <div
-      class="comparison"
-      role="table"
-      aria-label="Demonstration and real spa comparison"
-    >
-      <div class="comparison-row comparison-head">
-        <span>Area</span><span>This demonstration</span><span
-          >For a real spa</span
-        >
-      </div>
-      <div class="comparison-row">
-        <strong>Service catalog</strong><span
-          >20 sample services across six booking groups</span
-        ><span>The spa’s complete approved menu and rules</span>
-      </div>
-      <div class="comparison-row">
-        <strong>Accounts</strong><span>Sample accounts and data</span><span
-          >Client-owned accounts, staff access, and rules for how long records
-          are kept</span
-        >
-      </div>
-      <div class="comparison-row">
-        <strong>Booking</strong><span>Six shared Cal.com booking groups</span
-        ><span
-          >The spa’s platform, staff, rooms, availability, and policies</span
-        >
-      </div>
-      <div class="comparison-row">
-        <strong>Communication</strong><span>Sample emails and alerts</span><span
-          >The spa’s domain, consent, templates, and staff follow-up process</span
-        >
-      </div>
-      <div class="comparison-row">
-        <strong>Operations</strong><span
-          >Sample visit queue, service catalog, alerts, and dashboard</span
-        ><span>Staff access, error alerts, and a support plan</span>
-      </div>
-    </div>
-  </section>
-
   <section class="demo-actions" aria-labelledby="demo-title">
     <div>
       <h2 id="demo-title">Try the demonstration</h2>
@@ -528,9 +480,7 @@
 </main>
 
 <footer class="document-footer">
-  <span>Tranquility Spa Concierge</span><span>System overview · 2026</span><span
-    >Portfolio demonstration</span
-  >
+  <span>Tranquility Spa Concierge</span><span>System overview · 2026</span>
 </footer>
 
 <style>
@@ -1024,38 +974,29 @@
     margin: 0;
     padding: 0.65rem;
   }
-  .data-table,
-  .comparison {
+  .data-table {
     display: grid;
     gap: 0.5rem;
   }
-  .table-row,
-  .comparison-row {
+  .table-row {
     background: #f4f1ec;
     display: grid;
     grid-template-columns: 0.8fr 1.5fr 0.8fr;
   }
-  .comparison-row {
-    grid-template-columns: 0.6fr 1fr 1.2fr;
-  }
-  .table-row > *,
-  .comparison-row > * {
+  .table-row > * {
     font-size: 0.8rem;
     line-height: 1.45;
     padding: 1rem;
   }
-  .table-row strong,
-  .comparison-row strong {
+  .table-row strong {
     font-family: 'Iowan Old Style', Baskerville, serif;
     font-size: 1rem;
     font-weight: 400;
   }
-  .table-head,
-  .comparison-head {
+  .table-head {
     background: #e7ded6;
   }
-  .table-head > *,
-  .comparison-head > * {
+  .table-head > * {
     color: var(--accent);
     font-size: 0.62rem;
   }
@@ -1215,16 +1156,13 @@
     .staff-heading > span {
       display: none;
     }
-    .table-row,
-    .comparison-row {
+    .table-row {
       grid-template-columns: 1fr;
     }
-    .table-row > *,
-    .comparison-row > * {
+    .table-row > * {
       border-right: 0;
     }
-    .table-head,
-    .comparison-head {
+    .table-head {
       display: none;
     }
     .responsibility-grid h3 {
