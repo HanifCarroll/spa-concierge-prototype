@@ -4,6 +4,8 @@ A working prototype showing how spas can turn service confusion into a concise r
 
 [View the live prototype](https://spa-concierge-prototype.pages.dev/)
 
+[See how the complete system works](https://spa-concierge-prototype.pages.dev/system)
+
 ![Tranquility Spa Concierge desktop preview](design/rendered-desktop.png)
 
 ## The problem
@@ -27,7 +29,7 @@ The approved production-like handoff is: a real Cal.com booking triggers Make sc
 
 - SvelteKit 5 with TypeScript and Svelte runes.
 - `@sveltejs/adapter-static` with an `index.html` fallback for Cloudflare Pages.
-- One page with semantic sections, local photography, direct Cal.com booking links, and Typebot's official bubble embed.
+- A realistic spa site plus a plain-language system tour, both with semantic sections, local photography, and Typebot's official bubble embed.
 - A typed 20-service demo catalog in `src/lib/catalog.ts` renders the public menu with category filtering. Six booking pools map services to shared Cal.com events; links are generated with duration and Cal’s built-in notes prefill. Airtable is the editable source used by the live concierge.
 - No UI framework or component library.
 
@@ -40,7 +42,7 @@ The approved production-like handoff is: a real Cal.com booking triggers Make sc
 
 ## Design references
 
-The visual direction is recorded in `design/hero-concept.png`, `design/services-concept.png`, and `design/experience-concept.png`. Production UI uses only the standalone images in `static/images/`.
+The visual direction is recorded in `design/hero-concept.png`, `design/services-concept.png`, `design/experience-concept.png`, and `design/how-system-works-concept.png`. Production UI uses only the standalone images in `static/images/`.
 
 ## Local setup
 

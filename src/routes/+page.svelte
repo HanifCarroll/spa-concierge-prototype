@@ -166,11 +166,6 @@
   <meta property="og:type" content="website" />
 </svelte:head>
 
-<div class="utility-bar">
-  <p>Quiet care, thoughtfully considered</p>
-  <p>Concierge hours · Monday–Friday, 9–5 Eastern</p>
-</div>
-
 <header class="site-header">
   <a class="wordmark" href="#top" aria-label="Tranquility home"
     >Tranquility<span aria-hidden="true">.</span></a
@@ -425,7 +420,7 @@
       <p class="eyebrow">Explore</p>
       <a href="#services">Services</a><a href="#experience">The experience</a><a
         href="#about">Our approach</a
-      ><a href="#faq">FAQ</a>
+      ><a href="#faq">FAQ</a><a href="/system">How this system works</a>
     </div>
     <div>
       <p class="eyebrow">Concierge</p>
@@ -477,21 +472,6 @@
   .content-pad {
     padding-left: clamp(1.5rem, 7vw, 8rem);
     padding-right: clamp(1.5rem, 7vw, 8rem);
-  }
-  .utility-bar {
-    align-items: center;
-    background: #29172b;
-    color: #f4f0eb;
-    display: flex;
-    font-size: 0.7rem;
-    justify-content: space-between;
-    letter-spacing: 0.11em;
-    padding: 0.6rem clamp(1.5rem, 3.5vw, 3.5rem);
-    text-transform: uppercase;
-  }
-  .utility-bar p {
-    margin: 0;
-    max-width: none;
   }
   .site-header {
     align-items: center;
@@ -1034,11 +1014,6 @@
     width: 1px;
   }
   @media (max-width: 800px) {
-    .utility-bar {
-      align-items: flex-start;
-      flex-direction: column;
-      gap: 0.3rem;
-    }
     .desktop-nav {
       display: none;
     }
