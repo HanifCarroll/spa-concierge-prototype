@@ -564,13 +564,15 @@
   .hero {
     display: grid;
     grid-template-columns: 0.92fr 1.08fr;
-    min-height: min(52rem, calc(100vh - 7rem));
+    height: clamp(40rem, calc(100svh - 5.5rem), 47rem);
   }
   .hero-copy {
     align-content: center;
     display: grid;
-    padding-bottom: 5rem;
-    padding-top: 5rem;
+    padding-bottom: clamp(3rem, 5vh, 4rem);
+    padding-left: clamp(2rem, 5.5vw, 6.5rem);
+    padding-right: clamp(2rem, 5.5vw, 6.5rem);
+    padding-top: clamp(3rem, 5vh, 4rem);
   }
   .hero-visual {
     overflow: hidden;
@@ -579,7 +581,6 @@
   .hero-image {
     display: block;
     height: 100%;
-    min-height: 40rem;
     object-fit: cover;
     width: 100%;
     will-change: transform;
@@ -609,10 +610,10 @@
     letter-spacing: -0.055em;
   }
   h1 {
-    font-size: clamp(3.8rem, 6.5vw, 7.4rem);
-    line-height: 0.92;
-    margin-bottom: 2rem;
-    max-width: 8.5ch;
+    font-size: clamp(3.8rem, 5vw, 6.25rem);
+    line-height: 0.94;
+    margin-bottom: 1.25rem;
+    max-width: 9.5ch;
   }
   h2 {
     font-size: clamp(3rem, 5.4vw, 6rem);
@@ -643,20 +644,23 @@
     width: 5.5rem;
   }
   .hero-lede {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     max-width: 31rem;
+  }
+  .hero .copper-rule {
+    margin: 0.75rem 0 1.35rem;
   }
   .actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1.25rem;
-    margin-top: 1.3rem;
+    margin-top: 0.85rem;
   }
   .hero-note {
     color: #6f6260;
     font-size: 0.78rem;
     letter-spacing: 0.04em;
-    margin: 2.5rem 0 0;
+    margin: 1.75rem 0 0;
   }
   .hero-note span {
     color: #b86e45;
@@ -1060,13 +1064,15 @@
     .faq {
       grid-template-columns: 1fr;
     }
+    .hero {
+      height: auto;
+    }
     .hero-image {
-      min-height: 24rem;
-      max-height: 32rem;
+      height: clamp(20rem, 55vw, 28rem);
     }
     .hero-copy {
-      padding-bottom: 4rem;
-      padding-top: 4rem;
+      padding-bottom: 3.5rem;
+      padding-top: 3.5rem;
     }
     .hero-visual {
       order: -1;
@@ -1112,7 +1118,7 @@
   }
   @media (max-width: 500px) {
     h1 {
-      font-size: 3.6rem;
+      font-size: 3.35rem;
     }
     .service-row {
       grid-template-columns: 1.8rem 1fr auto;
