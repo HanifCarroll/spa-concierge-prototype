@@ -8,27 +8,27 @@
   const journey = [
     [
       'Describe the need',
-      'The guest explains what they want, how much time they have, and what matters today.'
+      'The guest describes the result they want, where they want care, how much time they have, and their treatment preferences.'
     ],
     [
       'Receive one recommendation',
-      'The concierge matches the request to an active service approved by the spa.'
+      'The concierge uses those answers to choose one active service that fits the guest’s goal and available time.'
     ],
     [
       'Choose a time',
-      'The guest moves to the booking calendar and selects real availability.'
+      'The booking calendar shows available times for the recommended service.'
     ],
     [
       'Complete intake',
-      'A short form gathers the information the team needs before the appointment.'
+      'A short form asks for preparation details and any note the guest wants staff to see.'
     ],
     [
       'Arrive prepared',
-      'Staff review the booking, intake, and recommendation context together.'
+      'Staff see the chosen service, appointment time, and intake responses in one visit record.'
     ],
     [
       'Receive follow-up',
-      'Aftercare and a feedback request are sent after the visit.'
+      'After staff complete the visit record, the guest receives the aftercare notes and a feedback link.'
     ]
   ];
 
@@ -40,12 +40,12 @@
     ],
     [
       'Service Catalog',
-      'Services, visit length, availability, matching guidance, and booking category.',
+      'Service name, visit length, active status, guest goals it matches, and booking category.',
       'When the menu changes'
     ],
     [
       'Needs Attention',
-      'Missing intake, staff-help requests, low feedback, and other items waiting for staff.',
+      'Guests with missing intake, staff-help requests, low feedback, or follow-up still due.',
       'As issues appear'
     ],
     [
@@ -59,7 +59,7 @@
     [
       'Recommendation',
       'Matches the guest’s answers to the approved service list.',
-      'Typebot + spa guidance'
+      'Typebot + service catalog'
     ],
     [
       'Booking confirmation',
@@ -70,7 +70,7 @@
     ['Intake request', 'Sends the post-booking intake form.', 'Make + Tally'],
     [
       'Aftercare',
-      'Sends the guidance recorded by staff after the visit.',
+      'Sends the aftercare notes recorded by staff to the guest.',
       'Make + email'
     ],
     [
@@ -110,8 +110,8 @@
       <h1 id="report-title">How the spa concierge works</h1>
       <p class="summary">
         A guest can get help choosing a service, book a time, complete intake,
-        and receive follow-up after the visit. Staff can see what they need at
-        each step.
+        and receive follow-up after the visit. Staff can see the booked service,
+        intake status, visit notes, and follow-up tasks.
       </p>
       <dl class="document-meta">
         <div>
@@ -152,7 +152,7 @@
         <strong>After</strong>
         <p>
           Guests describe their need and receive one approved recommendation
-          that fits their time.
+          that fits their goal and available time.
         </p>
       </div>
       <div>
@@ -165,8 +165,8 @@
       <div>
         <strong>For the owner</strong>
         <p>
-          The owner can update services and review activity from simple staff
-          views.
+          The owner can update services, see upcoming visits, find missing
+          intake, and review guest feedback.
         </p>
       </div>
     </div>
@@ -202,8 +202,8 @@
     <div class="section-intro">
       <h2 id="journey-title">1. The guest journey</h2>
       <p>
-        A guest moves through six clear steps, from asking for help to receiving
-        follow-up after the visit.
+        A guest moves through six steps, from describing the result they want to
+        receiving aftercare notes and a feedback link.
       </p>
     </div>
     <ol class="journey-list">
@@ -232,12 +232,13 @@
         <p class="map-heading">Guest tools</p>
         <div class="map-node">
           <strong>Spa website</strong><span
-            >Explains the offer and opens the concierge</span
+            >Shows the service menu and opens the concierge</span
           >
         </div>
         <div class="map-node">
           <strong>Typebot concierge</strong><span
-            >Collects the need and recommends an approved service</span
+            >Asks about the guest’s goal, time, and preferences, then recommends
+            one service</span
           >
         </div>
         <div class="map-pair">
@@ -250,7 +251,10 @@
         </div>
       </div>
       <div class="map-bridge">
-        <strong>Make</strong><small>Shares information between the tools</small>
+        <strong>Make</strong><small
+          >Updates the visit record and sends the intake, aftercare, and
+          feedback emails</small
+        >
       </div>
       <div class="map-column">
         <p class="map-heading">Staff tools</p>
@@ -276,8 +280,8 @@
     <div class="section-intro">
       <h2 id="screens-title">3. What guests and staff see</h2>
       <p>
-        Guests have a short conversation. Staff have a daily view of visits and
-        anything that needs attention.
+        Guests answer a few questions and receive one recommendation. Staff see
+        appointments, intake status, aftercare tasks, and feedback.
       </p>
     </div>
     <div class="screen-grid">
@@ -371,8 +375,9 @@
     <div class="section-intro">
       <h2 id="staff-title">4. Staff views</h2>
       <p>
-        Four Airtable views give the team the information needed for daily work
-        and regular review.
+        The visit queue shows today’s appointments. The catalog holds service
+        details. Needs Attention lists unfinished tasks. The dashboard shows
+        booking and feedback trends.
       </p>
     </div>
     <div class="data-table" role="table" aria-label="Staff operating views">
@@ -393,8 +398,9 @@
     <div class="section-intro">
       <h2 id="automatic-title">5. What the system sends and records</h2>
       <p>
-        The system handles routine messages and record updates. Staff provide
-        the service, write visit notes, and handle special requests.
+        The system records bookings, sends intake requests, and sends aftercare
+        and feedback emails. Staff provide the service, write visit notes, and
+        respond when a guest asks for help.
       </p>
     </div>
     <div class="data-table" role="table" aria-label="Automated actions">
@@ -420,8 +426,9 @@
     <div class="section-intro">
       <h2 id="maintenance-title">6. What the spa team can update</h2>
       <p>
-        Staff update the service catalog in Airtable. Those changes are then
-        used by the concierge and staff views.
+        Staff can change a service name, visit length, active status, matching
+        rules for which guest goals it matches, or booking category in Airtable.
+        The concierge uses the updated catalog.
       </p>
     </div>
     <div class="responsibility-grid">
@@ -430,7 +437,7 @@
         <p>Updates spa information</p>
         <ul>
           <li>Service details and availability</li>
-          <li>Recommendation guidance</li>
+          <li>Which guest goals each service matches</li>
           <li>Visit outcomes and aftercare notes</li>
         </ul>
       </article>
@@ -438,18 +445,18 @@
         <h3>System</h3>
         <p>Sends messages and updates records</p>
         <ul>
-          <li>Move records between tools</li>
-          <li>Send scheduled messages</li>
-          <li>Surface missing information</li>
+          <li>Add booking and intake details to the visit record</li>
+          <li>Send intake, aftercare, and feedback emails</li>
+          <li>Mark missing intake and low feedback for staff</li>
         </ul>
       </article>
       <article>
         <h3>Implementation partner</h3>
-        <p>Changes how the system works</p>
+        <p>Updates questions, rules, and connections</p>
         <ul>
-          <li>New services, connections, or rules</li>
+          <li>Changes to concierge questions or matching rules</li>
           <li>Staff access and error alerts</li>
-          <li>Major journey changes</li>
+          <li>Changes to booking, forms, or emails</li>
         </ul>
       </article>
     </div>
@@ -463,8 +470,9 @@
     <div class="section-intro">
       <h2 id="production-title">7. From demonstration to real use</h2>
       <p>
-        This version shows the full process with sample services and accounts. A
-        real spa would use its own information, policies, and accounts.
+        This version uses sample services, test accounts, and demonstration
+        emails. A real spa would use its own menu, booking calendar, email
+        domain, staff access, and follow-up rules.
       </p>
     </div>
     <div
@@ -478,7 +486,8 @@
         >
       </div>
       <div class="comparison-row">
-        <strong>Service catalog</strong><span>20 representative services</span
+        <strong>Service catalog</strong><span
+          >20 sample services across six booking groups</span
         ><span>The spa’s complete approved menu and rules</span>
       </div>
       <div class="comparison-row">
@@ -499,9 +508,9 @@
         >
       </div>
       <div class="comparison-row">
-        <strong>Operations</strong><span>Representative staff views</span><span
-          >Staff access, error alerts, and a support plan</span
-        >
+        <strong>Operations</strong><span
+          >Sample visit queue, service catalog, alerts, and dashboard</span
+        ><span>Staff access, error alerts, and a support plan</span>
       </div>
     </div>
   </section>
