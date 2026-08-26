@@ -103,7 +103,7 @@ for (const service of spaServices) {
     `wrong booking host for ${service.name}`
   );
   assert(
-    url.pathname === `/hanifcarroll/${pool.calSlug}`,
+    url.pathname === `/tranquility-spa-demo/${pool.calSlug}`,
     `wrong pool URL for ${service.name}`
   );
   assert(

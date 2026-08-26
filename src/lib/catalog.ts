@@ -65,7 +65,7 @@ export const createBookingUrl = (
     duration: String(durationMinutes),
     notes: `Recommended service: ${serviceName}`
   });
-  return `https://cal.com/hanifcarroll/${bookingPoolById[poolId].calSlug}?${params}`;
+  return `https://cal.com/tranquility-spa-demo/${bookingPoolById[poolId].calSlug}?${params}`;
 };
 
 export type ServiceCategory = 'Massage' | 'Facial' | 'Body' | 'Ritual';
