@@ -10,39 +10,39 @@ the generated URL preserves each service and duration as query prefills. The liv
 concierge loads active, duration-eligible services from Airtable through Make, then asks DeepSeek
 to select only from that shortlist. Cal.com is the booking authority and
 collects booking contact details. Typebot collects name
-and email only after an explicit **Ask the spa** choice. Tally is for
+and email only after an inline time selection or an explicit **Ask the spa** choice. Tally is for
 post-booking intake and feedback. The operator should receive a useful summary.
 
-| Case                | Visitor request                                         | Expected result                                                                                                              |
-| ------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Massage fit         | Neck and back tension, firm pressure, quiet, 60 minutes | Tranquility Massage; use `massage-bodywork`; show the three actions                                                          |
-| Facials fit         | Hydration and glow, 60 minutes                          | Radiance Facial; use `facials`; show the three actions                                                                       |
-| Body fit            | Renewed skin, 60 minutes                                | Seasonal Body Polish; use `body-treatments`; show the three actions                                                          |
-| Salt cave fit       | Quiet, low-touch reset, 45 minutes                      | Salt Cave Reset; use `salt-cave`; show the three actions                                                                     |
-| Restorative fit     | Gentle sensory pause, 45 minutes                        | Aromatherapy Reset; use `restorative-rituals`; show the three actions                                                        |
-| Consultation fit    | Unsure where to start, 30 minutes                       | Custom Care Consultation; use `consultation`; show the three actions                                                         |
-| Shared pool links   | Compare Tranquility Massage and Deep Release Massage    | Same Cal event path; each keeps its own `duration` and built-in `notes=Recommended service: …` prefill                       |
-| Catalog categories  | Browse Massage, Facial, Body, and Ritual                | Filter the menu and verify the visible count updates accessibly                                                              |
-| Generated booking   | Ask to book Deep Release Massage, 75 minutes            | Use the massage-bodywork pool URL with `duration=75` and its service prefill                                                 |
-| Duration mismatch   | Ask for Deep Release Massage with only 30 minutes       | Say there is no confident match; do not silently substitute a shorter treatment                                              |
-| Free-text context   | Asks how salt cave and massage differ                   | Continue to the fixed goal and duration questions; preserve the request for a staff summary                                  |
-| Outside catalogue   | Requests a 30-minute deep-tissue massage                | Do not invent a service; use the selected goal and duration rules                                                            |
-| Uncertain visitor   | Selects I’m still not sure                              | Use the remaining answers to make one approved recommendation or offer staff help                                            |
-| Change answers      | Chooses Change my answers                               | Return to the goal and duration path                                                                                         |
-| Full calendar       | Chooses Open full Cal calendar                          | Send the visitor to the matching Cal.com destination unchanged; Cal.com collects booking contact                             |
-| Inline availability | Chooses Choose a time here                              | Make returns real Cal slots in the configured timezone; never invent a slot; show recovery guidance on no slots or API error |
-| Inline booking      | Enters a returned slot, then submits contact            | Ask name/email only here; Make creates one Cal booking with service, duration, slot, timezone, and contact                   |
-| Ask the spa         | Chooses Ask the spa                                     | Ask for name and email, then send the staff-help request and useful summary                                                  |
+| Case                | Visitor request                                         | Expected result                                                                                                             |
+| ------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Massage fit         | Neck and back tension, firm pressure, quiet, 60 minutes | Tranquility Massage; use `massage-bodywork`; show all four next-step actions                                                |
+| Facials fit         | Hydration and glow, 60 minutes                          | Radiance Facial; use `facials`; show all four next-step actions                                                             |
+| Body fit            | Renewed skin, 60 minutes                                | Seasonal Body Polish; use `body-treatments`; show all four next-step actions                                                |
+| Salt cave fit       | Quiet, low-touch reset, 45 minutes                      | Salt Cave Reset; use `salt-cave`; show all four next-step actions                                                           |
+| Restorative fit     | Gentle sensory pause, 45 minutes                        | Aromatherapy Reset; use `restorative-rituals`; show all four next-step actions                                              |
+| Consultation fit    | Unsure where to start, 30 minutes                       | Custom Care Consultation; use `consultation`; show all four next-step actions                                               |
+| Shared pool links   | Compare Tranquility Massage and Deep Release Massage    | Same Cal event path; each keeps its own `duration` and built-in `notes=Recommended service: …` prefill                      |
+| Catalog categories  | Browse Massage, Facial, Body, and Ritual                | Filter the menu and verify the visible count updates accessibly                                                             |
+| Generated booking   | Ask to book Deep Release Massage, 75 minutes            | Use the massage-bodywork pool URL with `duration=75` and its service prefill                                                |
+| Duration mismatch   | Ask for Deep Release Massage with only 30 minutes       | Say there is no confident match; do not silently substitute a shorter treatment                                             |
+| Free-text context   | Asks how salt cave and massage differ                   | Continue to the fixed goal and duration questions; preserve the request for a staff summary                                 |
+| Outside catalogue   | Requests a 30-minute deep-tissue massage                | Do not invent a service; use the selected goal and duration rules                                                           |
+| Uncertain visitor   | Selects I’m still not sure                              | Use the remaining answers to make one approved recommendation or offer staff help                                           |
+| Change answers      | Chooses Change my answers                               | Return to the goal and duration path                                                                                        |
+| Full calendar       | Chooses Open full Cal calendar                          | Send the visitor to the matching Cal.com destination unchanged; Cal.com collects booking contact                            |
+| Inline availability | Chooses Choose a time here                              | Make returns three real Cal slots for tomorrow in Eastern Time; never invent a slot; retain the full-calendar fallback      |
+| Inline booking      | Selects a returned slot, then submits contact           | Ask name/email only here; Make creates one Cal booking with the pool slug, selected slot, contact, and recommendation notes |
+| Ask the spa         | Chooses Ask the spa                                     | Ask for name and email, then send the staff-help request and useful summary                                                 |
 
 ## Pass criteria
 
 - The flow stays free text → goal → duration → experience preference → one concise recommendation.
 - Airtable returns only active services with the selected duration before AI ranking.
 - The recommendation actions include the unchanged Open full Cal calendar fallback and the advanced Choose a time here path, plus Change my answers and Ask the spa.
-- Cal.com is the only authority for available times and booking contact. Inline availability must show the configured timezone and only Make-returned slots.
+- Cal.com is the only authority for available times and bookings. Inline availability must show the configured timezone and only Make-returned slots.
 - Inline contact is collected only after a selected slot; submit one Create Booking request and verify one Cal booking. A stale slot or API error must show recovery guidance and the full calendar route.
 - The existing Booking Created scenario remains the sole downstream writer of one Airtable appointment and one intake email.
-- Typebot asks for name and email only after Ask the spa.
+- Typebot asks for name and email only after an inline time selection or Ask the spa.
 - No safety questionnaire, safety case, medical answer, or safety-oriented copy appears.
 - Free text cannot override the fixed service rules.
 - No service, duration, price, availability, or operator detail is invented.

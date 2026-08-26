@@ -41,23 +41,50 @@ const variables = [
     isSessionVariable: true
   },
   {
-    id: 'spa_available_slots',
-    name: 'available_slots',
+    id: 'spa_service_slug',
+    name: 'service_slug',
     isSessionVariable: true
   },
   {
-    id: 'spa_availability_message',
-    name: 'availability_message',
+    id: 'spa_availability_start',
+    name: 'availability_start',
     isSessionVariable: true
   },
+  {
+    id: 'spa_availability_end',
+    name: 'availability_end',
+    isSessionVariable: true
+  },
+  {
+    id: 'spa_availability_data',
+    name: 'availability_data',
+    isSessionVariable: true
+  },
+  ...[1, 2, 3].flatMap((number) => [
+    {
+      id: `spa_slot_${number}_start`,
+      name: `slot_${number}_start`,
+      isSessionVariable: true
+    },
+    {
+      id: `spa_slot_${number}_label`,
+      name: `slot_${number}_label`,
+      isSessionVariable: true
+    }
+  ]),
   {
     id: 'spa_selected_slot',
     name: 'selected_slot',
     isSessionVariable: true
   },
   {
-    id: 'spa_booking_result',
-    name: 'booking_result',
+    id: 'spa_selected_slot_label',
+    name: 'selected_slot_label',
+    isSessionVariable: true
+  },
+  {
+    id: 'spa_booking_uid',
+    name: 'booking_uid',
     isSessionVariable: true
   }
 ].filter(
@@ -321,10 +348,43 @@ typebot.groups = [
     ]
   },
   {
-    id: 'spa_inline_availability',
-    title: 'Find Availability (Make)',
+    id: 'spa_inline_prepare',
+    title: 'Prepare Availability Request',
     graphCoordinates: { x: 2880, y: 40 },
     blocks: [
+      {
+        id: 'spa_set_service_slug',
+        type: 'Set variable',
+        options: {
+          variableId: 'spa_service_slug',
+          isExecutedOnClient: false,
+          isCode: true,
+          expressionToEvaluate:
+            'const path = String({{booking_url}}).split("?")[0]; return path.split("/").filter(Boolean).at(-1) || "";'
+        }
+      },
+      {
+        id: 'spa_set_availability_start',
+        type: 'Set variable',
+        options: {
+          variableId: 'spa_availability_start',
+          isExecutedOnClient: false,
+          isCode: true,
+          expressionToEvaluate:
+            'const date = new Date(); date.setUTCDate(date.getUTCDate() + 1); date.setUTCHours(4, 0, 0, 0); return date.toISOString();'
+        }
+      },
+      {
+        id: 'spa_set_availability_end',
+        type: 'Set variable',
+        options: {
+          variableId: 'spa_availability_end',
+          isExecutedOnClient: false,
+          isCode: true,
+          expressionToEvaluate:
+            'const date = new Date({{availability_start}}); date.setUTCDate(date.getUTCDate() + 1); return date.toISOString();'
+        }
+      },
       {
         id: 'spa_find_availability_webhook',
         type: 'Webhook',
@@ -333,14 +393,9 @@ typebot.groups = [
           isExecutedOnClient: false,
           responseVariableMapping: [
             {
-              id: 'spa_map_available_slots',
-              variableId: 'spa_available_slots',
-              bodyPath: 'data.slots'
-            },
-            {
-              id: 'spa_map_availability_message',
-              variableId: 'spa_availability_message',
-              bodyPath: 'data.message'
+              id: 'spa_map_availability_data',
+              variableId: 'spa_availability_data',
+              bodyPath: 'data'
             }
           ],
           webhook: {
@@ -354,45 +409,114 @@ typebot.groups = [
               }
             ],
             queryParams: [],
-            body: '{"booking_url":"{{booking_url}}","recommendation":"{{recommendation}}","duration_minutes":{{duration_minutes}},"timezone":"America/Los_Angeles"}'
+            body: '{"service_slug":"{{service_slug}}","start_time":"{{availability_start}}","end_time":"{{availability_end}}"}'
           }
         }
       },
-      text(
-        'spa_availability_text',
-        '{{availability_message}}\\n\\n{{available_slots}}',
-        'edge_availability_slot_prompt'
-      )
+      ...[1, 2, 3].flatMap((number) => [
+        {
+          id: `spa_set_slot_${number}_start`,
+          type: 'Set variable',
+          options: {
+            variableId: `spa_slot_${number}_start`,
+            isExecutedOnClient: false,
+            isCode: true,
+            expressionToEvaluate: `const response = JSON.parse({{availability_data}}); return Object.values(response.data || {}).flat()[${number - 1}]?.start || "";`
+          }
+        },
+        {
+          id: `spa_set_slot_${number}_label`,
+          type: 'Set variable',
+          options: {
+            variableId: `spa_slot_${number}_label`,
+            isExecutedOnClient: false,
+            isCode: true,
+            expressionToEvaluate: `const value = {{slot_${number}_start}}; if (!value) return ""; return new Intl.DateTimeFormat("en-US", {timeZone:"America/New_York",weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(value)) + " ET";`
+          }
+        }
+      ]),
+      {
+        id: 'spa_slots_available_condition',
+        type: 'Condition',
+        outgoingEdgeId: 'edge_slots_empty',
+        items: [
+          {
+            id: 'spa_slots_available_item',
+            outgoingEdgeId: 'edge_slots_found',
+            content: {
+              logicalOperator: 'AND',
+              comparisons: [
+                {
+                  id: 'spa_slot_1_is_set',
+                  variableId: 'spa_slot_1_start',
+                  comparisonOperator: 'Is set'
+                }
+              ]
+            }
+          }
+        ]
+      }
     ]
   },
   {
-    id: 'spa_inline_slot',
-    title: 'Select Inline Slot',
+    id: 'spa_inline_slots',
+    title: 'Choose a Cal.com Time',
     graphCoordinates: { x: 3280, y: 40 },
     blocks: [
-      text(
-        'spa_slot_prompt',
-        'Enter the date and time you want to book (exactly as shown above).'
-      ),
+      text('spa_slot_prompt', 'These times are available in Eastern Time.'),
+      choice('spa_slot_choice', 'spa_selected_slot_label', [
+        ['spa_slot_1', '{{slot_1_label}}', 'edge_choose_slot_1'],
+        ['spa_slot_2', '{{slot_2_label}}', 'edge_choose_slot_2'],
+        ['spa_slot_3', '{{slot_3_label}}', 'edge_choose_slot_3'],
+        ['spa_slot_calendar', 'Open full Cal calendar', 'edge_slots_calendar']
+      ])
+    ]
+  },
+  ...[1, 2, 3].map((number) => ({
+    id: `spa_select_slot_${number}`,
+    title: `Select Time ${number}`,
+    graphCoordinates: { x: 3680, y: -100 + number * 100 },
+    blocks: [
       {
-        id: 'spa_selected_slot_input',
-        outgoingEdgeId: 'edge_slot_contact',
-        type: 'text input',
+        id: `spa_copy_slot_${number}`,
+        outgoingEdgeId: `edge_slot_${number}_contact`,
+        type: 'Set variable',
         options: {
           variableId: 'spa_selected_slot',
-          labels: { placeholder: 'Selected date and time' }
+          isExecutedOnClient: false,
+          isCode: true,
+          expressionToEvaluate: `return {{slot_${number}_start}};`
         }
       }
+    ]
+  })),
+  {
+    id: 'spa_inline_no_slots',
+    title: 'No Inline Times',
+    graphCoordinates: { x: 3280, y: 320 },
+    blocks: [
+      text(
+        'spa_no_slots_text',
+        'I couldn’t load an inline time for tomorrow. The full calendar may have more dates.'
+      ),
+      choice('spa_no_slots_choice', variableIds.next_step, [
+        [
+          'spa_no_slots_calendar',
+          'Open full Cal calendar',
+          'edge_no_slots_calendar'
+        ],
+        ['spa_no_slots_change', 'Change my answers', 'edge_no_slots_change']
+      ])
     ]
   },
   {
     id: 'spa_inline_contact',
     title: 'Confirm Inline Booking',
-    graphCoordinates: { x: 3680, y: 40 },
+    graphCoordinates: { x: 4080, y: 40 },
     blocks: [
       text(
         'spa_inline_contact_intro',
-        'Great — I’ll request that time. What name and email should I attach to the booking?'
+        'You selected {{selected_slot_label}}. What name and email should I attach to the booking?'
       ),
       {
         id: 'spa_inline_name_input',
@@ -418,9 +542,9 @@ typebot.groups = [
           isExecutedOnClient: false,
           responseVariableMapping: [
             {
-              id: 'spa_map_booking_result',
-              variableId: 'spa_booking_result',
-              bodyPath: 'data.message'
+              id: 'spa_map_booking_uid',
+              variableId: 'spa_booking_uid',
+              bodyPath: 'data.uid'
             }
           ],
           webhook: {
@@ -434,11 +558,14 @@ typebot.groups = [
               }
             ],
             queryParams: [],
-            body: '{"booking_url":"{{booking_url}}","recommendation":"{{recommendation}}","duration_minutes":{{duration_minutes}},"selected_slot":"{{selected_slot}}","full_name":"{{full_name}}","email":"{{email}}","timezone":"America/Los_Angeles"}'
+            body: '{"service_slug":"{{service_slug}}","slot_start":"{{selected_slot}}","full_name":"{{full_name}}","email":"{{email}}","notes":"{{recommendation}}"}'
           }
         }
       },
-      text('spa_inline_booking_result_text', '{{booking_result}}')
+      text(
+        'spa_inline_booking_result_text',
+        'You’re booked for {{selected_slot_label}}. Check your email for the confirmation and intake form.'
+      )
     ]
   },
   {
@@ -546,17 +673,47 @@ typebot.edges = [
   edge(
     'edge_action_inline',
     { blockId: 'spa_action_choice', itemId: 'spa_action_inline' },
-    'spa_inline_availability'
+    'spa_inline_prepare'
   ),
   edge(
-    'edge_availability_slot_prompt',
-    { blockId: 'spa_availability_text' },
-    'spa_inline_slot'
+    'edge_slots_found',
+    {
+      blockId: 'spa_slots_available_condition',
+      itemId: 'spa_slots_available_item'
+    },
+    'spa_inline_slots'
   ),
   edge(
-    'edge_slot_contact',
-    { blockId: 'spa_selected_slot_input' },
-    'spa_inline_contact'
+    'edge_slots_empty',
+    { blockId: 'spa_slots_available_condition' },
+    'spa_inline_no_slots'
+  ),
+  ...[1, 2, 3].flatMap((number) => [
+    edge(
+      `edge_choose_slot_${number}`,
+      { blockId: 'spa_slot_choice', itemId: `spa_slot_${number}` },
+      `spa_select_slot_${number}`
+    ),
+    edge(
+      `edge_slot_${number}_contact`,
+      { blockId: `spa_copy_slot_${number}` },
+      'spa_inline_contact'
+    )
+  ]),
+  edge(
+    'edge_slots_calendar',
+    { blockId: 'spa_slot_choice', itemId: 'spa_slot_calendar' },
+    'spa_booking'
+  ),
+  edge(
+    'edge_no_slots_calendar',
+    { blockId: 'spa_no_slots_choice', itemId: 'spa_no_slots_calendar' },
+    'spa_booking'
+  ),
+  edge(
+    'edge_no_slots_change',
+    { blockId: 'spa_no_slots_choice', itemId: 'spa_no_slots_change' },
+    'spa_goal'
   ),
   edge(
     'edge_action_change',
